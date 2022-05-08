@@ -10,6 +10,8 @@ set history=50
 set ignorecase
 " 検索語に大文字を混ぜる場合には大文字小文字を区別する
 set smartcase
+" 言語に併せてインデントを自動挿入
+set smartindent
 set number
 " 改行やタブを可視化
 set list
@@ -104,3 +106,5 @@ inoremap <silent><expr> <Tab>
 """ <Tab>で次、<S+Tab>で前
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>":
+" 言語ごとのタブ設定
+autocmd FileType cpp set shiftwidth=2 softtabstop=2
