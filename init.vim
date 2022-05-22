@@ -114,6 +114,7 @@ inoremap <silent><expr> <Tab>
 """ <Tab>で次、<S+Tab>で前
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>":
+<<<<<<< HEAD
 
 """ markdown settings
 " set to 1, nvim will open the preview window after entering the markdown buffer
@@ -215,5 +216,7 @@ let g:mkdp_filetypes = ['markdown']
 " By default the theme is define according to the preferences of the system
 let g:mkdp_theme = 'dark'
 
+=======
+>>>>>>> 82fd4ce86390b8fe86d45fd7daa957e324f81dc6
 " 言語ごとのタブ設定
 autocmd FileType cpp set shiftwidth=2 softtabstop=2
