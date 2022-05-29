@@ -5,6 +5,7 @@ set fileencodings=utf-8,iso-2202-jp,sjis,euc-jp
 set fileformats=unix,dos
 " バックアップをとらない
 set nobackup
+set noswapfile
 set history=50
 " 検索時に大文字小文字を区別しない
 set ignorecase
@@ -17,6 +18,7 @@ set number
 set listchars=eol:⏎,tab:>-,trail:·,extends:>,precedes:<
 set list
 set showmatch
+set clipboard+=unnamedplus
 " set autoindent
 " 構文ごとに色分け
 syntax on
