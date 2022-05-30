@@ -81,6 +81,8 @@ let g:ale_fix_on_save = 1
 " Ctr-h: move left tab, Ctrl-l move right tab
 nnoremap <C-h> gT
 nnoremap <C-l> gt
+nnoremap j gj
+nnoremap k gk
 " terminal mode setting
 tnoremap <C-n> <C-\><C-n>
 
