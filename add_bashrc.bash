@@ -19,6 +19,13 @@ cppr() {
     ./a.out && rm a.out
 }
 
+nimcompile() { nim c $@ ;}
+nimr() {
+    exename="$(echo $1 | sed 's/\.[^\.]*$//')"
+    nimcompile $@
+    ./$exename && rm $exename
+}
+
 
 
 ## nvimの設定
@@ -92,4 +99,4 @@ alias ll='ls -Fal --color=auto'
 # PS1="\[\n${c_mag}\]\D{%Y/%m/%d} \t \u@\h -> \[${c_yel}\]\n\w -> \n$ \[\e[0m\]"
 
 
-export GIT_EDITOR=micro
+export GIT_EDITOR=nvim

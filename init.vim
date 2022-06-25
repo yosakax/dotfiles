@@ -32,11 +32,11 @@ set shiftwidth=4
 set mouse=a
 
 " 括弧補完
-inoremap { {}<LEFT>
-inoremap [ []<LEFT>
-inoremap ( ()<LEFT>
-inoremap " ""<LEFT>
-inoremap ' ''<LEFT>
+" inoremap { {}<LEFT>
+" inoremap [ []<LEFT>
+" inoremap ( ()<LEFT>
+" inoremap " ""<LEFT>
+" inoremap ' ''<LEFT>
 " pythonの場所を明示
 let g:python_host_prog = '/home/yosaka/.pyenv/versions/2.7.17/envs/vim2/bin/python'
 let g:python3_host_prog = '/home/yosaka/.pyenv/versions/3.8.2/envs/vim/bin/python'
@@ -56,6 +56,9 @@ Plug 'dense-analysis/ale'
 Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
+Plug 'zah/nim.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/async.vim'
 call plug#end()
 
 " set update time for git plugin
@@ -219,5 +222,18 @@ let g:mkdp_filetypes = ['markdown']
 " By default the theme is define according to the preferences of the system
 let g:mkdp_theme = 'dark'
 
+" nimlang setting
+" if executable('nimlsp')
+"     autocmd Users lsp_setup call lsp#register_server({
+"                 \ 'name': 'nimlsp',
+"                 \ 'cmd': {server_info->[&shell, &shellcmdflag, 'nimlsp ~/.nimble/bin/nim']},
+"                 \ 'whitelist': ['nim'],
+"                 \})
+"     autocmd FileType nim call <SID>configure_lsp()
+" endif
+
 " 言語ごとのタブ設定
-autocmd FileType cpp set shiftwidth=2 softtabstop=2
+autocmd FileType cpp setglobal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+autocmd FileType c setglobal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+" autocmd FileType cpp setlocal commentstring=//\ %s
+" autocmd FileType c setlocal commentstring=//\ %s
