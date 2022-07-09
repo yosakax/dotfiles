@@ -31,6 +31,10 @@ set shiftwidth=4
 " マウスを有効に
 set mouse=a
 
+" カーソル位置強調
+set cursorline
+set cursorcolumn
+
 " 括弧補完
 " inoremap { {}<LEFT>
 " inoremap [ []<LEFT>
@@ -59,6 +63,7 @@ Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
 Plug 'zah/nim.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/async.vim'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 " set update time for git plugin
@@ -233,7 +238,11 @@ let g:mkdp_theme = 'dark'
 " endif
 
 " 言語ごとのタブ設定
-autocmd FileType cpp setglobal shiftwidth=2 softtabstop=2 commentstring=//\ %s
-autocmd FileType c setglobal shiftwidth=2 softtabstop=2 commentstring=//\ %s
-" autocmd FileType cpp setlocal commentstring=//\ %s
-" autocmd FileType c setlocal commentstring=//\ %s
+if has("autocmd")
+    filetype plugin on
+    filetype indent on
+    autocmd FileType cpp setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    " autocmd FileType cpp setlocal commentstring=//\ %s
+    " autocmd FileType c setlocal commentstring=//\ %s
+endif
