@@ -8,7 +8,7 @@ set nobackup
 set noswapfile
 set history=50
 " 検索時に大文字小文字を区別しない
-set ignorecase
+" set ignorecase
 " 検索語に大文字を混ぜる場合には大文字小文字を区別する
 set smartcase
 " 言語に併せてインデントを自動挿入
@@ -64,6 +64,7 @@ Plug 'zah/nim.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/async.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'rust-lang/rust.vim'
 call plug#end()
 
 " set update time for git plugin
@@ -78,7 +79,7 @@ nmap <C-n> <Plug>AirlineSelectNextTab
 " formatter settings
 let g:ale_fixers = {
 \    '*': ['remove_trailing_lines', "trim_whitespace"],
-\    'python': ['black'],
+\    'python': ['black','isort'],
 \    'cpp': ['clang-format'],
 \    'c': ['clang-format'],
 \}
@@ -236,6 +237,9 @@ let g:mkdp_theme = 'dark'
 "                 \})
 "     autocmd FileType nim call <SID>configure_lsp()
 " endif
+
+" rust自動フォーマット
+let g:rustfmt_autosave = 1
 
 " 言語ごとのタブ設定
 if has("autocmd")

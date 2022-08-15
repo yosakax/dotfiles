@@ -26,7 +26,13 @@ nimr() {
     ./$exename && rm $exename
 }
 
-
+## Rustコンパイル
+rustcompile(){ rustc $@ ;}
+rrust() {
+    exename="$(echo $1 | sed 's/\.[^\.]*$//')"
+    rustcompile $@
+    ./$exename && rm $exename
+}
 
 ## nvimの設定
 XDG_CONFIG_HOME="${HOME}/.config"
@@ -40,8 +46,8 @@ nvim --version > /dev/null || {
 }
 
 ## PS1の設定
-source ~/.bash/completion/_git
-source ~/.bash/completion/git-prompt.sh
+# source ~/.bash/completion/_git
+# source ~/.bash/completion/git-prompt.sh
 
 # プロンプトに各種情報を表示
 GIT_PS1_SHOWDIRTYSTATE=1
