@@ -65,6 +65,8 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/async.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
+Plug 'skanehira/preview-markdown.vim'
+" Plug 'tyru/eskk.vim'
 call plug#end()
 
 " set update time for git plugin
@@ -88,6 +90,7 @@ let g:ale_python_flake8_option = '--max-line-length=99'
 let g:ale_fix_on_save = 1
 
 " Ctr-h: move left tab, Ctrl-l move right tab
+set signcolumn=yes
 nnoremap <C-h> gT
 nnoremap <C-l> gt
 nnoremap j gj
@@ -120,13 +123,35 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
+inoremap <silent><expr> <C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
+inoremap <silent><expr> <C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
+inoremap <silent><expr> <Enter> coc#pum#visible() ? coc#pum#confirm() : "\<Enter>"
+inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
+inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
+
+inoremap <silent><expr> <TAB>
+  \ coc#pum#visible() ? coc#pum#next(1) :
+  \ <SID>check_back_space() ? "\<Tab>" :
+  \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " " "\<C-h>"
+inoremap <silent><expr> <C-space> coc#refresh()
+
+
+" inoremap <silent><expr> <Tab>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<Tab>" :
+"       \ coc#refresh()
+" inoremap <silent><expr> <TAB>
+"     \ coc#pum#visible() ? coc#pum#next(1)
+"     \ CheckBackspace() ? "\<Tab>"  :
+"     \ coc#refresh()
+" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 """ <Tab>で次、<S+Tab>で前
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>":
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>":
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+"     \ : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
 
 """ markdown settings
 " set to 1, nvim will open the preview window after entering the markdown buffer
