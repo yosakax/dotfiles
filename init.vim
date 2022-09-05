@@ -66,8 +66,24 @@ Plug 'prabirshrestha/async.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
 Plug 'skanehira/preview-markdown.vim'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'cocopon/iceberg.vim'
 " Plug 'tyru/eskk.vim'
+
 call plug#end()
+
+" colorscheme nightfox
+" colorscheme duskfox
+colorscheme iceberg
+set pumblend=15
+set termguicolors
+" 背景透過
+" highlight Normal ctermbg=NONE guibg=NONE
+" highlight NonText ctermbg=NONE guibg=NONE
+" highlight LineNr ctermbg=NONE guibg=NONE
+" highlight Folded ctermbg=NONE guibg=NONE
+" highlight EndOfBuffer ctermbg=NONE guibg=NONE
+
 
 " set update time for git plugin
 set updatetime=100
