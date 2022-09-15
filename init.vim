@@ -68,6 +68,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'skanehira/preview-markdown.vim'
 Plug 'EdenEast/nightfox.nvim'
 Plug 'cocopon/iceberg.vim'
+Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
+Plug 'junegunn/fzf.vim'
 " Plug 'tyru/eskk.vim'
 
 call plug#end()
@@ -75,7 +77,7 @@ call plug#end()
 " colorscheme nightfox
 " colorscheme duskfox
 colorscheme iceberg
-set pumblend=15
+set pumblend=20
 set termguicolors
 " 背景透過
 " highlight Normal ctermbg=NONE guibg=NONE
