@@ -70,13 +70,17 @@ Plug 'EdenEast/nightfox.nvim'
 Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
 Plug 'junegunn/fzf.vim'
+Plug 'cohama/lexima.vim'
 " Plug 'tyru/eskk.vim'
-
+" Plug 'lambdalisue/fern.vim'
 call plug#end()
 
+let g:lexima_enable_basic_rules = 1
+let g:EditorConfig_core_mode = 'external_command'
+
 " colorscheme nightfox
-" colorscheme duskfox
-colorscheme iceberg
+colorscheme duskfox
+" colorscheme iceberg
 set pumblend=20
 set termguicolors
 " 背景透過
