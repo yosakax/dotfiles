@@ -41,6 +41,10 @@ set cursorcolumn
 " inoremap ( ()<LEFT>
 " inoremap " ""<LEFT>
 " inoremap ' ''<LEFT>
+" inoremap { {}<Left>
+" inoremap {<Enter> {}<Left><CR><ESC><S-o>
+" " inoremap ( ()<ESC>i
+" inoremap (<Enter> ()<Left><CR><ESC><S-o>
 " pythonの場所を明示
 let g:python_host_prog = '/home/yosaka/.pyenv/versions/2.7.17/envs/vim2/bin/python'
 let g:python3_host_prog = '/home/yosaka/.pyenv/versions/3.8.2/envs/vim/bin/python'
@@ -53,8 +57,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdtree'
 Plug 'xuyuanp/nerdtree-git-plugin', {'on': 'NERDTreeToggle'}
 Plug 'ryanoasis/vim-devicons'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'mattn/vim-lsp-settings'
 Plug 'ambv/black'
 Plug 'dense-analysis/ale'
 Plug 'airblade/vim-gitgutter'
@@ -70,9 +74,9 @@ Plug 'EdenEast/nightfox.nvim'
 Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
 Plug 'junegunn/fzf.vim'
-Plug 'cohama/lexima.vim'
+" Plug 'cohama/lexima.vim'
 " Plug 'tyru/eskk.vim'
-" Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern.vim'
 call plug#end()
 
 let g:lexima_enable_basic_rules = 1
@@ -147,10 +151,11 @@ endfunction
 
 inoremap <silent><expr> <C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
 inoremap <silent><expr> <C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
-inoremap <silent><expr> <Enter> coc#pum#visible() ? coc#pum#confirm() : "\<Enter>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
 inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
 
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 inoremap <silent><expr> <TAB>
   \ coc#pum#visible() ? coc#pum#next(1) :
   \ <SID>check_back_space() ? "\<Tab>" :
@@ -158,21 +163,6 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " " "\<C-h>"
 inoremap <silent><expr> <C-space> coc#refresh()
 
-
-" inoremap <silent><expr> <Tab>
-"       \ pumvisible() ? "\<C-n>" :
-"       \ <SID>check_back_space() ? "\<Tab>" :
-"       \ coc#refresh()
-" inoremap <silent><expr> <TAB>
-"     \ coc#pum#visible() ? coc#pum#next(1)
-"     \ CheckBackspace() ? "\<Tab>"  :
-"     \ coc#refresh()
-" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-""" <Tab>で次、<S+Tab>で前
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>":
-" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-"     \ : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 
 """ markdown settings
@@ -294,6 +284,7 @@ if has("autocmd")
     filetype indent on
     autocmd FileType cpp setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType js setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     " autocmd FileType cpp setlocal commentstring=//\ %s
     " autocmd FileType c setlocal commentstring=//\ %s
 endif
