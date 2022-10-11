@@ -32,8 +32,8 @@ set shiftwidth=4
 set mouse=a
 
 " カーソル位置強調
-set cursorline
-set cursorcolumn
+" set cursorline
+" set cursorcolumn
 
 " 括弧補完
 " inoremap { {}<LEFT>
@@ -54,8 +54,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-commentary'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'preservim/nerdtree'
-Plug 'xuyuanp/nerdtree-git-plugin', {'on': 'NERDTreeToggle'}
+" Plug 'preservim/nerdtree'
+" Plug 'xuyuanp/nerdtree-git-plugin', {'on': 'NERDTreeToggle'}
 Plug 'ryanoasis/vim-devicons'
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'mattn/vim-lsp-settings'
@@ -77,9 +77,12 @@ Plug 'junegunn/fzf.vim'
 " Plug 'cohama/lexima.vim'
 " Plug 'tyru/eskk.vim'
 Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 call plug#end()
 
-let g:lexima_enable_basic_rules = 1
+let g:fern#renderer = "nerdfont"
 let g:EditorConfig_core_mode = 'external_command'
 
 " colorscheme nightfox
@@ -99,10 +102,12 @@ set termguicolors
 set updatetime=100
 
 " nerdtree settings
-nmap <C-b> :NERDTreeToggle<CR>
+" nmap <C-b> :NERDTreeToggle<CR>
+nmap <C-b> :Fern . -drawer<CR>
 let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
+nmap <C-p> :Files<CR>
 
 " formatter settings
 let g:ale_fixers = {
