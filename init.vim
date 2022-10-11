@@ -103,7 +103,8 @@ set updatetime=100
 
 " nerdtree settings
 " nmap <C-b> :NERDTreeToggle<CR>
-nmap <C-b> :Fern . -drawer<CR>
+" nmap <C-b> :Fern . -drawer<CR>
+nnoremap <C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
