@@ -46,8 +46,8 @@ set mouse=a
 " " inoremap ( ()<ESC>i
 " inoremap (<Enter> ()<Left><CR><ESC><S-o>
 " pythonの場所を明示
-let g:python_host_prog = '/home/yosaka/.pyenv/versions/2.7.17/envs/vim2/bin/python'
-let g:python3_host_prog = '/home/yosaka/.pyenv/versions/3.8.2/envs/vim/bin/python'
+let g:python_host_prog = expand('$HOME/.pyenv/versions/2.7.17/envs/vim2/bin/python')
+let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.8.2/envs/vim/bin/python')
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'vim-airline/vim-airline'
@@ -101,10 +101,8 @@ set termguicolors
 " set update time for git plugin
 set updatetime=100
 
-" nerdtree settings
-" nmap <C-b> :NERDTreeToggle<CR>
-" nmap <C-b> :Fern . -drawer<CR>
-nnoremap <C-b> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+" Fern settings
+nnoremap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
 let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
