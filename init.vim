@@ -73,14 +73,20 @@ Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tomasr/molokai'
 Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
+Plug 'windwp/nvim-autopairs'
+
 call plug#end()
+
+lua << EOF
+require("nvim-autopairs").setup {}
+EOF
+
 
 let g:fern#renderer = "nerdfont"
 
 
 let g:coc_global_extensions = [
 \ 'coc-rust-analyzer',
-\ 'coc-pairs',
 \ 'coc-pyright'
 \ ]
 
