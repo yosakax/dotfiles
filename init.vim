@@ -32,8 +32,8 @@ set shiftwidth=4
 set mouse=a
 
 " カーソル位置強調
-" set cursorline
-" set cursorcolumn
+set cursorline
+set cursorcolumn
 
 " 括弧補完
 " inoremap { {}<LEFT>
@@ -48,46 +48,44 @@ set mouse=a
 " pythonの場所を明示
 let g:python_host_prog = expand('$HOME/.pyenv/versions/2.7.17/envs/vim2/bin/python')
 let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.8.2/envs/vim/bin/python')
+let g:vscode = 1
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-commentary'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'preservim/nerdtree'
-" Plug 'xuyuanp/nerdtree-git-plugin', {'on': 'NERDTreeToggle'}
 Plug 'ryanoasis/vim-devicons'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'mattn/vim-lsp-settings'
 Plug 'ambv/black'
 Plug 'dense-analysis/ale'
 Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
-Plug 'zah/nim.vim'
-Plug 'prabirshrestha/vim-lsp'
+" Plug 'zah/nim.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
-Plug 'skanehira/preview-markdown.vim'
-Plug 'EdenEast/nightfox.nvim'
 Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
 Plug 'junegunn/fzf.vim'
-" Plug 'cohama/lexima.vim'
-" Plug 'tyru/eskk.vim'
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'tomasr/molokai'
+Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
 call plug#end()
 
 let g:fern#renderer = "nerdfont"
-let g:EditorConfig_core_mode = 'external_command'
 
-" colorscheme nightfox
-colorscheme duskfox
-" colorscheme iceberg
+
+let g:coc_global_extensions = [
+\ 'coc-rust-analyzer',
+\ 'coc-pairs',
+\ 'coc-pyright'
+\ ]
+
+" colorscheme molokai
+colorscheme kanagawa
 set pumblend=20
 set termguicolors
 " 背景透過
@@ -98,11 +96,12 @@ set termguicolors
 " highlight EndOfBuffer ctermbg=NONE guibg=NONE
 
 
+
 " set update time for git plugin
 set updatetime=100
 
 " Fern settings
-nnoremap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
+nmap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
 let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
@@ -142,8 +141,8 @@ filetype plugin on
 " let g:netrw_liststyle = 3
 " let g:netrw_browse_split = 4
 " let g:netrw_winsize = 30
-" let g:netrw_sizestyle = "H"
-" let g:netrw_timefmt = "%Y/%m/%d(%a) %H:%M:%S"
+" let g:netrw_sizestyle = 'H'
+" let g:netrw_timefmt = '%Y/%m/%d(%a) %H:%M:%S'
 " let g:netrw_preview = 1
 "/// SPLIT BORDER SETTINGS
 hi VertSplit cterm=none
@@ -155,11 +154,13 @@ endfunction
 
 inoremap <silent><expr> <C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
 inoremap <silent><expr> <C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
 inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
 
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<C-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm(): "\<C-g>u\<CR>\<C-r>=coc#on_enter()\<CR>"
+
 inoremap <silent><expr> <TAB>
   \ coc#pum#visible() ? coc#pum#next(1) :
   \ <SID>check_back_space() ? "\<Tab>" :
@@ -267,7 +268,8 @@ let g:mkdp_filetypes = ['markdown']
 
 " set default theme (dark or light)
 " By default the theme is define according to the preferences of the system
-let g:mkdp_theme = 'dark'
+" let g:mkdp_theme = 'dark'
+let g:mkdp_theme = 'light'
 
 " nimlang setting
 " if executable('nimlsp')
