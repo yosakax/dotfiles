@@ -87,7 +87,8 @@ let g:fern#renderer = "nerdfont"
 
 let g:coc_global_extensions = [
 \ 'coc-rust-analyzer',
-\ 'coc-pyright'
+\ 'coc-pyright',
+\ 'coc-clangd'
 \ ]
 
 " colorscheme molokai

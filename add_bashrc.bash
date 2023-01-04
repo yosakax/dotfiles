@@ -92,6 +92,7 @@ alias grep='grep --color'
 
 alias ls='ls -F --color=auto'
 alias ll='ls -Fal --color=auto'
+alias cl="clip"
 
 ## 環境別設定
 ### 色の設定などは完全に好みです
