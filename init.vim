@@ -60,8 +60,9 @@ Plug 'ambv/black'
 Plug 'dense-analysis/ale'
 Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-" Plug 'zah/nim.vim'
+Plug 'alaviss/nim.nvim'
 Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
 Plug 'cocopon/iceberg.vim'
@@ -74,8 +75,17 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tomasr/molokai'
 Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
 Plug 'windwp/nvim-autopairs'
+Plug 'vim-scripts/taglist.vim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 call plug#end()
+
+" nimlang setting
+au User asyncomplete_setup call asyncomplete#register_source({
+    \ 'name': 'nim',
+    \ 'whitelist': ['nim'],
+    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
+    \ })
 
 lua << EOF
 require("nvim-autopairs").setup {}
@@ -96,12 +106,16 @@ colorscheme kanagawa
 set pumblend=20
 set termguicolors
 " 背景透過
-" highlight Normal ctermbg=NONE guibg=NONE
-" highlight NonText ctermbg=NONE guibg=NONE
-" highlight LineNr ctermbg=NONE guibg=NONE
-" highlight Folded ctermbg=NONE guibg=NONE
-" highlight EndOfBuffer ctermbg=NONE guibg=NONE
+highlight Normal ctermbg=NONE guibg=NONE
+highlight NonText ctermbg=NONE guibg=NONE
+highlight LineNr ctermbg=NONE guibg=NONE
+highlight Folded ctermbg=NONE guibg=NONE
+highlight EndOfBuffer ctermbg=NONE guibg=NONE
 
+
+" buffer keybinds
+nnoremap <silent> <C-j> :bprev<CR>
+nnoremap <silent> <C-k> :bnext<CR>
 
 
 " set update time for git plugin
@@ -144,13 +158,13 @@ inoremap jj <Esc>
 " /// Enable Netrw (default file browser)
 filetype plugin on
 " /// Netrw SETTINGS
-" let g:netwr_banner = 0
-" let g:netrw_liststyle = 3
-" let g:netrw_browse_split = 4
-" let g:netrw_winsize = 30
-" let g:netrw_sizestyle = 'H'
-" let g:netrw_timefmt = '%Y/%m/%d(%a) %H:%M:%S'
-" let g:netrw_preview = 1
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_winsize = 30
+let g:netrw_sizestyle = 'H'
+let g:netrw_timefmt = '%Y/%m/%d(%a) %H:%M:%S'
+let g:netrw_preview = 1
 "/// SPLIT BORDER SETTINGS
 hi VertSplit cterm=none
 " Tabで補完が効くように設定
@@ -278,16 +292,6 @@ let g:mkdp_filetypes = ['markdown']
 " let g:mkdp_theme = 'dark'
 let g:mkdp_theme = 'light'
 
-" nimlang setting
-" if executable('nimlsp')
-"     autocmd Users lsp_setup call lsp#register_server({
-"                 \ 'name': 'nimlsp',
-"                 \ 'cmd': {server_info->[&shell, &shellcmdflag, 'nimlsp ~/.nimble/bin/nim']},
-"                 \ 'whitelist': ['nim'],
-"                 \})
-"     autocmd FileType nim call <SID>configure_lsp()
-" endif
-
 " rust自動フォーマット
 let g:rustfmt_autosave = 1
 
@@ -299,5 +303,4 @@ if has("autocmd")
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType js setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     " autocmd FileType cpp setlocal commentstring=//\ %s
-    " autocmd FileType c setlocal commentstring=//\ %s
 endif
