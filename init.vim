@@ -58,12 +58,12 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'ambv/black'
 Plug 'dense-analysis/ale'
-" Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'alaviss/nim.nvim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
 Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
@@ -78,8 +78,8 @@ Plug 'windwp/nvim-autopairs'
 Plug 'vim-scripts/taglist.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'sainnhe/everforest'
-Plug 'dinhhuy258/git.nvim'
-Plug 'lewis6991/gitsigns.nvim'
+" Plug 'dinhhuy258/git.nvim'
+" Plug 'lewis6991/gitsigns.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 call plug#end()
