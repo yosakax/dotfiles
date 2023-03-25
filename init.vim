@@ -93,7 +93,7 @@ au User asyncomplete_setup call asyncomplete#register_source({
 
 lua << EOF
 require("nvim-autopairs").setup {}
-require('gitsigns').setup()
+-- require('gitsigns').setup()
 EOF
 
 
