@@ -58,12 +58,12 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'ambv/black'
 Plug 'dense-analysis/ale'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'alaviss/nim.nvim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
 Plug 'cocopon/iceberg.vim'
 Plug 'junegunn/fzf', { 'dir' : '~/.fzf', 'do' : './install --all'}
@@ -77,7 +77,11 @@ Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
 Plug 'windwp/nvim-autopairs'
 Plug 'vim-scripts/taglist.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-
+Plug 'sainnhe/everforest'
+Plug 'dinhhuy258/git.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
 call plug#end()
 
 " nimlang setting
@@ -89,28 +93,32 @@ au User asyncomplete_setup call asyncomplete#register_source({
 
 lua << EOF
 require("nvim-autopairs").setup {}
+require('gitsigns').setup()
 EOF
 
 
 let g:fern#renderer = "nerdfont"
 
-
 let g:coc_global_extensions = [
 \ 'coc-rust-analyzer',
 \ 'coc-pyright',
-\ 'coc-clangd'
+\ 'coc-clangd',
+\ 'coc-tsserver',
+\ 'coc-eslint'
 \ ]
 
 " colorscheme molokai
 colorscheme kanagawa
+" colorscheme everforest
+
 set pumblend=20
 set termguicolors
 " 背景透過
-highlight Normal ctermbg=NONE guibg=NONE
-highlight NonText ctermbg=NONE guibg=NONE
-highlight LineNr ctermbg=NONE guibg=NONE
-highlight Folded ctermbg=NONE guibg=NONE
-highlight EndOfBuffer ctermbg=NONE guibg=NONE
+" highlight Normal ctermbg=NONE guibg=NONE
+" highlight NonText ctermbg=NONE guibg=NONE
+" highlight LineNr ctermbg=NONE guibg=NONE
+" highlight Folded ctermbg=NONE guibg=NONE
+" highlight EndOfBuffer ctermbg=NONE guibg=NONE
 
 
 " buffer keybinds
@@ -141,8 +149,10 @@ let g:ale_fix_on_save = 1
 
 " Ctr-h: move left tab, Ctrl-l move right tab
 set signcolumn=yes
-nnoremap <C-h> gT
-nnoremap <C-l> gt
+" nnoremap <C-h> gT
+" nnoremap <C-l> gt
+nnoremap <silent> <C-h> :BufferMovePrevious<CR>
+nnoremap <silent> <C-l> :BufferMoveNext<CR>
 nnoremap j gj
 nnoremap k gk
 " terminal mode setting
