@@ -96,7 +96,12 @@ require("nvim-autopairs").setup {}
 -- require('gitsigns').setup()
 
 -- barbar's settings
-require'bufferline'.setup {
+vim.g.barbar_auto_setup = false -- disable auto-setup
+require'barbar'.setup {
+  -- WARN: do not copy everything below into your config!
+  --       It is just an example of what configuration options there are.
+  --       The defaults are suitable for most people.
+
   -- Enable/disable animations
   animation = true,
 
@@ -106,32 +111,11 @@ require'bufferline'.setup {
   -- Enable/disable current/total tabpages indicator (top right corner)
   tabpages = true,
 
-  -- Enable/disable close button
-  closable = true,
-
   -- Enables/disable clickable tabs
   --  - left-click: go to buffer
   --  - middle-click: delete buffer
   clickable = true,
 
-  -- Enables / disables diagnostic symbols
-  diagnostics = {
-    -- you can use a list
-    {enabled = true, icon = 'ﬀ'}, -- ERROR
-    {enabled = false}, -- WARN
-    {enabled = false}, -- INFO
-    {enabled = true},  -- HINT
-
-    -- OR `vim.diagnostic.severity`
-    [vim.diagnostic.severity.ERROR] = {enabled = true, icon = 'ﬀ'},
-    [vim.diagnostic.severity.WARN] = {enabled = false},
-    [vim.diagnostic.severity.INFO] = {enabled = false},
-    [vim.diagnostic.severity.HINT] = {enabled = true},
-  },
-
-  -- Excludes buffers from the tabline
-  exclude_ft = {'javascript'},
-  exclude_name = {'package.json'},
 
   -- A buffer to this direction will be focused (if it exists) when closing the current buffer.
   -- Valid options are 'left' (the default) and 'right'
@@ -149,23 +133,40 @@ require'bufferline'.setup {
   -- Enable highlighting visible buffers
   highlight_visible = true,
 
-  -- Enable/disable icons
-  -- if set to 'numbers', will show buffer index in the tabline
-  -- if set to 'both', will show buffer index and icons in the tabline
-  icons = true,
+  icons = {
+    -- Configure the base icons on the bufferline.
+    buffer_index = false,
+    buffer_number = false,
+    button = '',
+    -- Enables / disables diagnostic symbols
+    diagnostics = {
+      [vim.diagnostic.severity.ERROR] = {enabled = true, icon = 'ﬀ'},
+      [vim.diagnostic.severity.WARN] = {enabled = false},
+      [vim.diagnostic.severity.INFO] = {enabled = false},
+      [vim.diagnostic.severity.HINT] = {enabled = true},
+    },
+    filetype = {
+      -- Sets the icon's highlight group.
+      -- If false, will use nvim-web-devicons colors
+      custom_colors = false,
 
-  -- If set, the icon color will follow its corresponding buffer
-  -- highlight group. By default, the Buffer*Icon group is linked to the
-  -- Buffer* group (see Highlighting below). Otherwise, it will take its
-  -- default value as defined by devicons.
-  icon_custom_colors = false,
+      -- Requires `nvim-web-devicons` if `true`
+      enabled = true,
+    },
+    separator = {left = '▎', right = ''},
 
-  -- Configure icons on the bufferline.
-  icon_separator_active = '▎',
-  icon_separator_inactive = '▎',
-  icon_close_tab = '',
-  icon_close_tab_modified = '●',
-  icon_pinned = '車',
+    -- Configure the icons on the bufferline when modified or pinned.
+    -- Supports all the base icon options.
+    modified = {button = '●'},
+    pinned = {button = '車', filename = true, separator = {right = ''}},
+
+    -- Configure the icons on the bufferline based on the visibility of a buffer.
+    -- Supports all the base icon options, plus `modified` and `pinned`.
+    alternate = {filetype = {enabled = true}},
+    current = {buffer_index = true},
+    inactive = {button = '×'},
+    visible = {modified = {buffer_number = true}},
+  },
 
   -- If true, new buffers will be inserted at the start/end of the list.
   -- Default is to insert after current buffer.
@@ -187,6 +188,18 @@ require'bufferline'.setup {
   -- usability (see order below)
   semantic_letters = true,
 
+  -- Set the filetypes which barbar will offset itself for
+  sidebar_filetypes = {
+    -- Use the default values: {event = 'BufWinLeave', text = nil}
+    NvimTree = true,
+    -- Or, specify the text used for the offset:
+    undotree = {text = 'undotree'},
+    -- Or, specify the event which the sidebar executes when leaving:
+    ['neo-tree'] = {event = 'BufWipeout'},
+    -- Or, specify both
+    Outline = {event = 'BufWinLeave', text = 'symbols-outline'},
+  },
+
   -- New buffer letters are assigned in this order. This order is
   -- optimal for the qwerty keyboard layout but might need adjustement
   -- for other layouts.
@@ -207,8 +220,10 @@ let g:coc_global_extensions = [
 \ 'coc-rust-analyzer',
 \ 'coc-pyright',
 \ 'coc-clangd',
+\ 'coc-prettier',
 \ 'coc-tsserver',
-\ 'coc-eslint'
+\ 'coc-eslint',
+\ 'coc-css'
 \ ]
 
 " colorscheme molokai
@@ -415,6 +430,7 @@ if has("autocmd")
     filetype indent on
     autocmd FileType cpp setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
-    autocmd FileType js setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType javascript setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType javascriptreact setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     " autocmd FileType cpp setlocal commentstring=//\ %s
 endif
