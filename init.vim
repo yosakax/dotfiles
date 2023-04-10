@@ -77,11 +77,13 @@ Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
 Plug 'windwp/nvim-autopairs'
 Plug 'vim-scripts/taglist.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'sainnhe/everforest'
 " Plug 'dinhhuy258/git.nvim'
 " Plug 'lewis6991/gitsigns.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
+Plug 'majutsushi/tagbar'
 call plug#end()
 
 " nimlang setting
@@ -208,6 +210,19 @@ require'barbar'.setup {
   -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
   -- where X is the buffer number. But only a static string is accepted here.
   no_name_title = nil,
+  require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+    line_numbers = true,
+    multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+    trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+    mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+    -- Separator between context and content. Should be a single character string, like '-'.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    separator = nil,
+    zindex = 20, -- The Z-index of the context window
+  }
 }
 EOF
 
@@ -251,6 +266,7 @@ set updatetime=100
 " Fern settings
 nmap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
 let g:airline#extentions#tabline#enabled = 1
+" let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
 nmap <C-p> :Files<CR>
@@ -317,6 +333,10 @@ inoremap <silent><expr> <TAB>
   \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " " "\<C-h>"
 inoremap <silent><expr> <C-space> coc#refresh()
+
+" airline setting
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#tagbar#flags = ''
 
 
 
