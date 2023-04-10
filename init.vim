@@ -84,6 +84,7 @@ Plug 'sainnhe/everforest'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'majutsushi/tagbar'
+Plug 'soramugi/auto-ctags.vim'
 call plug#end()
 
 " nimlang setting
@@ -228,6 +229,7 @@ EOF
 
 
 
+let g:auto_ctags = 1
 
 let g:fern#renderer = "nerdfont"
 
@@ -336,7 +338,7 @@ inoremap <silent><expr> <C-space> coc#refresh()
 
 " airline setting
 let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#tagbar#flags = ''
+let g:airline#extensions#tagbar#flags = 'f'
 
 
 
