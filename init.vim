@@ -48,7 +48,6 @@ set cursorcolumn
 " pythonの場所を明示
 let g:python_host_prog = expand('$HOME/.pyenv/versions/2.7.17/envs/vim2/bin/python')
 let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.8.2/envs/vim/bin/python')
-let g:vscode = 1
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'vim-airline/vim-airline'
@@ -85,6 +84,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'majutsushi/tagbar'
 Plug 'soramugi/auto-ctags.vim'
+Plug 'lukas-reineke/indent-blankline.nvim'
 call plug#end()
 
 " nimlang setting
@@ -263,11 +263,11 @@ nnoremap <silent> <C-k> :bnext<CR>
 
 
 " set update time for git plugin
-set updatetime=100
+set updatetime=300
 
 " Fern settings
 nmap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
-let g:airline#extentions#tabline#enabled = 1
+" let g:airline#extentions#tabline#enabled = 1
 " let g:airline#extentions#tabline#enabled = 1
 nmap <C-p> <Plug>AirlineSelectPrevTab
 nmap <C-n> <Plug>AirlineSelectNextTab
@@ -296,14 +296,14 @@ nnoremap k gk
 tnoremap <C-n> <C-\><C-n>
 
 " Airline settings
-let g:airline_powerline_fonts = 1
+" let g:airline_powerline_fonts = 1
 
 " Esc Setting
 inoremap jk <Esc>
 inoremap jj <Esc>
 
 " /// Enable Netrw (default file browser)
-filetype plugin on
+" filetype plugin on
 " /// Netrw SETTINGS
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
@@ -339,7 +339,11 @@ inoremap <silent><expr> <C-space> coc#refresh()
 " airline setting
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#tagbar#flags = 'f'
-
+let g:airline_theme = 'deus'
+let g:airline_deus_bg = 'dark'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled = 0
 
 
 """ markdown settings
@@ -449,7 +453,7 @@ let g:rustfmt_autosave = 1
 " 言語ごとのタブ設定
 if has("autocmd")
     filetype plugin on
-    filetype indent on
+    " filetype indent on
     autocmd FileType cpp setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType javascript setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
