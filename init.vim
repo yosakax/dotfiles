@@ -46,7 +46,7 @@ set mouse=a
 " " inoremap ( ()<ESC>i
 " inoremap (<Enter> ()<Left><CR><ESC><S-o>
 " pythonの場所を明示
-let g:python_host_prog = expand('$HOME/.pyenv/versions/2.7.17/envs/vim2/bin/python')
+let g:python_host_prog = expand('$HOME/.pyenv/versions/3.8.2/envs/vim/bin/python')
 let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.8.2/envs/vim/bin/python')
 
 
@@ -72,9 +72,10 @@ Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tomasr/molokai'
-Plug 'rebelot/kanagawa.nvim', {'commit': 'fc2e308'}
+Plug 'rebelot/kanagawa.nvim'
 Plug 'windwp/nvim-autopairs'
 Plug 'vim-scripts/taglist.vim'
+Plug 'soramugi/auto-ctags.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'sainnhe/everforest'
@@ -84,7 +85,11 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'majutsushi/tagbar'
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'thinca/vim-splash'
 call plug#end()
+
+let g:auto_ctags = 1
+set tags=./tags
 
 " nimlang setting
 au User asyncomplete_setup call asyncomplete#register_source({
@@ -347,8 +352,8 @@ inoremap <silent><expr> <TAB>
   \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " " "\<C-h>"
 inoremap <silent><expr> <C-space> coc#refresh()
-nmap <C-]> gd
-nmap <silent><C-t> :noh<CR><C-o>
+" nmap <silent> <C-]> <Plug>(coc-implementation)
+" nmap <silent><C-t> :noh<CR><C-o>
 
 " airline setting
 let g:airline#extensions#tagbar#enabled = 1
@@ -360,7 +365,7 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#branch#enabled = 0
 
 
-""" markdown settings
+"" markdown settings
 " set to 1, nvim will open the preview window after entering the markdown buffer
 " default: 0
 let g:mkdp_auto_start = 0
