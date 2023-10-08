@@ -85,7 +85,6 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'majutsushi/tagbar'
 Plug 'lukas-reineke/indent-blankline.nvim'
-Plug 'thinca/vim-splash'
 call plug#end()
 
 let g:auto_ctags = 1
@@ -107,10 +106,30 @@ vim.opt.list = true
 vim.opt.listchars:append "space:⋅"
 vim.opt.listchars:append "eol:↴"
 
-require("indent_blankline").setup {
-    show_end_of_line = true,
-    space_char_blankline = " ",
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
 }
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+end)
+
+require("ibl").setup { indent = { highlight = highlight } }
 EOF
 
 lua << EOF
@@ -316,8 +335,8 @@ tnoremap <C-n> <C-\><C-n>
 " let g:airline_powerline_fonts = 1
 
 " Esc Setting
-inoremap jk <Esc>
-inoremap jj <Esc>
+" inoremap jk <Esc>
+" inoremap jj <Esc>
 
 " /// Enable Netrw (default file browser)
 " filetype plugin on
@@ -352,6 +371,7 @@ inoremap <silent><expr> <TAB>
   \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " " "\<C-h>"
 inoremap <silent><expr> <C-space> coc#refresh()
+nmap <silent> <C-]> <Plug>(coc-definition)
 " nmap <silent> <C-]> <Plug>(coc-implementation)
 " nmap <silent><C-t> :noh<CR><C-o>
 
@@ -477,4 +497,12 @@ if has("autocmd")
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType javascript setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType javascriptreact setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType typescript setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd FileType typescriptreact setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
 endif
+
+augroup ReactFiletypes
+  autocmd!
+  autocmd BufRead,BufNewFile *.jsx set filetype=javascriptreact
+  autocmd BufRead,BufNewFile *.tsx set filetype=typescriptreact
+augroup END
