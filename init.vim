@@ -75,7 +75,6 @@ Plug 'tomasr/molokai'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'windwp/nvim-autopairs'
 Plug 'vim-scripts/taglist.vim'
-Plug 'soramugi/auto-ctags.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'sainnhe/everforest'
@@ -85,11 +84,12 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'majutsushi/tagbar'
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'tpope/vim-surround'
+Plug 'puremourning/vimspector'
 call plug#end()
 
-let g:auto_ctags = 1
-set tags=./tags
-
+" vimspector default setting
+let g:vimspector_enable_mappings = 'HUMAN'
 " nimlang setting
 au User asyncomplete_setup call asyncomplete#register_source({
     \ 'name': 'nim',
@@ -131,6 +131,7 @@ end)
 
 require("ibl").setup { indent = { highlight = highlight } }
 EOF
+
 
 lua << EOF
 -- barbar's settings
@@ -294,8 +295,13 @@ set termguicolors
 
 
 " buffer keybinds
-nnoremap <silent> <C-j> :bprev<CR>
-nnoremap <silent> <C-k> :bnext<CR>
+nnoremap <silent> <A-c> <Cmd>BufferClose<CR>
+nnoremap <silent> <C-j> <Cmd>BufferPrevious<CR>
+nnoremap <silent> <C-k> <Cmd>BufferNext<CR>
+nnoremap <silent> <Space>bb <Cmd>BufferOrderByBufferNumber<CR>
+nnoremap <silent> <Space>bd <Cmd>BufferOrderByDirectory<CR>
+nnoremap <silent> <Space>bl <Cmd>BufferOrderByLanguage<CR>
+nnoremap <silent> <Space>bw <Cmd>BufferOrderByWindowNumber<CR>
 
 
 " set update time for git plugin
@@ -491,7 +497,7 @@ let g:rustfmt_autosave = 1
 
 " 言語ごとのタブ設定
 if has("autocmd")
-    filetype plugin on
+    " filetype plugin on
     " filetype indent on
     autocmd FileType cpp setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType c setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
