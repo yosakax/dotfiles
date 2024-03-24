@@ -8,6 +8,7 @@ if has("autocmd")
     autocmd FileType javascriptreact setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType typescript setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
     autocmd FileType typescriptreact setlocal shiftwidth=2 softtabstop=2 commentstring=//\ %s
+    autocmd TermOpen *  setlocal nonumber
 endif
 
 augroup ReactFiletypes

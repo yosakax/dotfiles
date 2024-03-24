@@ -30,6 +30,9 @@ set tabstop=4
 set shiftwidth=4
 " マウスを有効に
 set mouse=a
+set laststatus=3
+" spell check
+" set spell
 
 " カーソル位置強調
 " set cursorline

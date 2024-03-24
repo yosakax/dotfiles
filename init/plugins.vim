@@ -40,8 +40,8 @@ call plug#end()
 
 let g:coc_global_extensions = [
 \ 'coc-rust-analyzer',
-\ 'coc-pyright',
 \ 'coc-clangd',
+\ 'coc-pyright',
 \ 'coc-prettier',
 \ 'coc-tsserver',
 \ 'coc-eslint',
