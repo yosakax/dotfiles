@@ -34,6 +34,8 @@ Plug 'majutsushi/tagbar'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'tpope/vim-surround'
 Plug 'lambdalisue/fern-hijack.vim'
+Plug 'mhinz/vim-startify'
+Plug 'TaDaa/vimade'
 
 " Plug 'puremourning/vimspector'
 call plug#end()
