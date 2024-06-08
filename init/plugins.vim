@@ -22,7 +22,7 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'tomasr/molokai'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'windwp/nvim-autopairs'
-Plug 'vim-scripts/taglist.vim'
+" Plug 'vim-scripts/taglist.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'sainnhe/everforest'
@@ -35,7 +35,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'tpope/vim-surround'
 Plug 'lambdalisue/fern-hijack.vim'
 Plug 'mhinz/vim-startify'
-Plug 'TaDaa/vimade'
+" Plug 'TaDaa/vimade'
 
 " Plug 'puremourning/vimspector'
 call plug#end()

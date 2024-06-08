@@ -1,4 +1,4 @@
-
+nnoremap <Enter><Enter> <C-w>w
 " Fern settings
 nmap <C-b> :Fern . -reveal=% -drawer -toggle -width=30<CR>
 " let g:airline#extentions#tabline#enabled = 1

@@ -49,8 +49,11 @@ set laststatus=3
 " " inoremap ( ()<ESC>i
 " inoremap (<Enter> ()<Left><CR><ESC><S-o>
 " pythonの場所を明示
-let g:python_host_prog = expand('$HOME/.pyenv/versions/3.11.4/envs/vim/bin/python')
-let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.11.4/envs/vim/bin/python')
+"let g:python_host_prog = expand('$HOME/.pyenv/versions/3.11.4/envs/vim/bin/python')
+"let g:python3_host_prog = expand('$HOME/.pyenv/versions/3.11.4/envs/vim/bin/python')
+
+let g:python_host_prog = expand('$HOME/.pynvim-env/.venv/bin/python')
+let g:python3_host_prog = expand('$HOME/.pynvim-env/.venv/bin/python')
 
 " /// Netrw SETTINGS
 let g:netrw_banner = 0
