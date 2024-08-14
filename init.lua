@@ -40,8 +40,8 @@ vim.opt.laststatus = 3
 -- vim.opt.spell = true
 
 -- カーソル位置強調
-vim.opt.cursorline = true
-vim.opt.cursorcolumn = true
+-- vim.opt.cursorline = true
+-- vim.opt.cursorcolumn = true
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -278,6 +278,39 @@ require("lazy").setup({
 		-- },
 		{ "lambdalisue/fern-hijack.vim", lazy = false },
 		{ "lambdalisue/vim-glyph-palette" },
+		{
+			"lukas-reineke/indent-blankline.nvim",
+			main = "ibl",
+			---@module "ibl"
+			---@type ibl.config
+			opts = {},
+			init = function()
+				local highlight = {
+					"RainbowRed",
+					"RainbowYellow",
+					"RainbowBlue",
+					"RainbowOrange",
+					"RainbowGreen",
+					"RainbowViolet",
+					"RainbowCyan",
+				}
+
+				local hooks = require("ibl.hooks")
+				-- create the highlight groups in the highlight setup hook, so they are reset
+				-- every time the colorscheme changes
+				hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+					vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+					vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+					vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+					vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+					vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+					vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+					vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+				end)
+
+				require("ibl").setup({ indent = { highlight = highlight } })
+			end,
+		},
 
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
@@ -505,6 +538,8 @@ null_ls.setup({
 		formatting.black,
 		formatting.isort,
 		formatting.prettier,
+		formatting.clang_format,
+		formatting.gofumpt,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then
