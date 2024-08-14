@@ -491,17 +491,12 @@ require("gitsigns").setup()
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
--- fern and some key binds
+--  some key binds
 vim.keymap.set("n", "k", "gk", {})
 vim.keymap.set("n", "j", "gj", {})
 vim.keymap.set("t", "<C-n>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "<CR><CR>", "<C-w>w", {})
--- vim.g["fern#default_hidden"] = 1
--- vim.g["fern#renderer"] = "nerdfont"
--- vim.api.nvim_set_keymap("n", "<C-b>", ":Fern . -reveal=% -drawer -toggle<CR>", { noremap = true, silent = true })
--- vim.api.nvim_set_keymap("n", "<leader>r", ":Fern . -reveal=%<CR>", { noremap = true, silent = true })
-
--- formatter and linter settings by none-ls
+-- -- formatter and linter settings by none-ls
 local prettier = require("prettier")
 
 prettier.setup({
