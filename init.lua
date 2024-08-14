@@ -36,6 +36,17 @@ vim.opt.shiftwidth = 4
 vim.opt.mouse = "a"
 vim.opt.laststatus = 3
 
+vim.opt.pumblend = 20
+vim.opt.termguicolors = true
+-- 背景透過
+-- highlight Normal ctermbg=NONE guibg=NONE
+-- highlight NonText ctermbg=NONE guibg=NONE
+-- highlight LineNr ctermbg=NONE guibg=NONE
+-- highlight Folded ctermbg=NONE guibg=NONE
+-- highlight EndOfBuffer ctermbg=NONE guibg=NONE
+-- set update time for git plugin
+vim.opt.updatetime = 300
+
 -- spell check
 -- vim.opt.spell = true
 
@@ -76,7 +87,7 @@ require("lazy").setup({
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 		{
 			"folke/tokyonight.nvim",
-			lazy = false, -- make sure we load this during startup if it is your main colorscheme
+			lazy = true, -- make sure we load this during startup if it is your main colorscheme
 			priority = 1000, -- make sure to load this before all the other start plugins
 			config = function()
 				-- load the colorscheme here
@@ -175,16 +186,7 @@ require("lazy").setup({
 				"rcarriga/nvim-notify",
 			},
 		},
-		{
-			"neovim/nvim-lspconfig",
-			-- opts = {
-			-- 	setup = {
-			-- 		rust_analyzer = function()
-			-- 			return true
-			-- 		end,
-			-- 	},
-			-- },
-		},
+		{ "neovim/nvim-lspconfig" },
 		{ "williamboman/mason.nvim" },
 		{ "williamboman/mason-lspconfig.nvim" },
 		{ "L3MON4D3/LuaSnip" },
@@ -265,19 +267,6 @@ require("lazy").setup({
 				})
 			end,
 		},
-		{ "lambdalisue/fern.vim", lazy = false },
-		{ "lambdalisue/fern-git-status.vim" },
-		{ "lambdalisue/nerdfont.vim" },
-		-- {
-		-- 	"lambdalisue/fern-renderer-nerdfont.vim",
-		-- 	lazy = false,
-		-- 	config = function()
-		-- 		vim.g["fern#renderer"] = "nerdfont"
-		-- 		vim.g["fern#renderers"] = { "nerdfont" }
-		-- 	end,
-		-- },
-		{ "lambdalisue/fern-hijack.vim", lazy = false },
-		{ "lambdalisue/vim-glyph-palette" },
 		{
 			"lukas-reineke/indent-blankline.nvim",
 			main = "ibl",
@@ -310,6 +299,43 @@ require("lazy").setup({
 
 				require("ibl").setup({ indent = { highlight = highlight } })
 			end,
+		},
+		{
+			"nvim-tree/nvim-tree.lua",
+			version = "*",
+			lazy = false,
+			dependencies = {
+				"nvim-tree/nvim-web-devicons",
+			},
+			config = function()
+				local function my_on_attach(bufnr)
+					local api = require("nvim-tree.api")
+
+					local function opts(desc)
+						return {
+							desc = "nvim-tree: " .. desc,
+							buffer = bufnr,
+							noremap = true,
+							silent = true,
+							nowait = true,
+						}
+					end
+
+					-- default mappings
+					api.config.mappings.default_on_attach(bufnr)
+
+					-- custom mappings
+					vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
+					vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+					vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+					vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+				end
+
+				require("nvim-tree").setup({ on_attach = my_on_attach })
+			end,
+		},
+		{
+			"andersevenrud/nvim_context_vt",
 		},
 
 		-- plugins above -------------------------------------------------------------------------------------------
@@ -444,6 +470,9 @@ map("n", "<Space>bd", "<Cmd>BufferOrderByDirectory<CR>", opts)
 map("n", "<Space>bl", "<Cmd>BufferOrderByLanguage<CR>", opts)
 map("n", "<Space>bw", "<Cmd>BufferOrderByWindowNumber<CR>", opts)
 
+-- nvim-tree config
+map("n", "<C-b>", "<Cmd>NvimTreeToggle<CR>", opts)
+
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
@@ -467,9 +496,9 @@ vim.keymap.set("n", "k", "gk", {})
 vim.keymap.set("n", "j", "gj", {})
 vim.keymap.set("t", "<C-n>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "<CR><CR>", "<C-w>w", {})
-vim.g["fern#default_hidden"] = 1
+-- vim.g["fern#default_hidden"] = 1
 -- vim.g["fern#renderer"] = "nerdfont"
-vim.api.nvim_set_keymap("n", "<C-b>", ":Fern . -reveal=% -drawer -toggle<CR>", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("n", "<C-b>", ":Fern . -reveal=% -drawer -toggle<CR>", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap("n", "<leader>r", ":Fern . -reveal=%<CR>", { noremap = true, silent = true })
 
 -- formatter and linter settings by none-ls
