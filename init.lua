@@ -166,6 +166,44 @@ require("lazy").setup({
 		{
 			"nvim-lualine/lualine.nvim",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
+			options = {
+				icons_enabled = true,
+				theme = "auto",
+				component_separators = { left = "", right = "" },
+				section_separators = { left = "", right = "" },
+				disabled_filetypes = {
+					statusline = {},
+					winbar = {},
+				},
+				ignore_focus = {},
+				always_divide_middle = true,
+				globalstatus = false,
+				refresh = {
+					statusline = 1000,
+					tabline = 1000,
+					winbar = 1000,
+				},
+			},
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff", "diagnostics" },
+				lualine_c = { "filename" },
+				lualine_x = { "encoding", "fileformat", "filetype" },
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
+			},
+			inactive_sections = {
+				lualine_a = {},
+				lualine_b = {},
+				lualine_c = { "filename" },
+				lualine_x = { "location" },
+				lualine_y = {},
+				lualine_z = {},
+			},
+			tabline = {},
+			winbar = {},
+			inactive_winbar = {},
+			extensions = {},
 		},
 
 		-- local plugins need to be explicitly configured with dir
@@ -188,7 +226,19 @@ require("lazy").setup({
 		},
 		{ "neovim/nvim-lspconfig" },
 		{ "williamboman/mason.nvim" },
-		{ "williamboman/mason-lspconfig.nvim" },
+		{
+			"williamboman/mason-lspconfig.nvim",
+			dependencies = {
+				{
+					"SmiteshP/nvim-navbuddy",
+					dependencies = {
+						"SmiteshP/nvim-navic",
+						"MunifTanjim/nui.nvim",
+					},
+					opts = { lsp = { auto_attach = true } },
+				},
+			},
+		},
 		{ "L3MON4D3/LuaSnip" },
 
 		{ "hrsh7th/nvim-cmp" },
@@ -196,6 +246,53 @@ require("lazy").setup({
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-path" },
 		{ "saadparwaiz1/cmp_luasnip" },
+		-- {
+		-- 	"nvimdev/lspsaga.nvim",
+		-- 	config = function()
+		-- 		require("lspsaga").setup({})
+		-- 	end,
+		-- 	dependencies = {
+		-- 		"nvim-treesitter/nvim-treesitter", -- optional
+		-- 		"nvim-tree/nvim-web-devicons", -- optional
+		-- 	},
+		-- },
+		{
+			"folke/trouble.nvim",
+			opts = {}, -- for default options, refer to the configuration section for custom setup.
+			cmd = "Trouble",
+			keys = {
+				{
+					"<leader>xx",
+					"<cmd>Trouble diagnostics toggle<cr>",
+					desc = "Diagnostics (Trouble)",
+				},
+				{
+					"<leader>xX",
+					"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+					desc = "Buffer Diagnostics (Trouble)",
+				},
+				{
+					"<leader>cs",
+					"<cmd>Trouble symbols toggle focus=false<cr>",
+					desc = "Symbols (Trouble)",
+				},
+				{
+					"<leader>cl",
+					"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+					desc = "LSP Definitions / references / ... (Trouble)",
+				},
+				{
+					"<leader>xL",
+					"<cmd>Trouble loclist toggle<cr>",
+					desc = "Location List (Trouble)",
+				},
+				{
+					"<leader>xQ",
+					"<cmd>Trouble qflist toggle<cr>",
+					desc = "Quickfix List (Trouble)",
+				},
+			},
+		},
 		{ "nvimtools/none-ls.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 		{ "MunifTanjim/prettier.nvim" },
 		{ "rust-lang/rust.vim" },
@@ -337,6 +434,116 @@ require("lazy").setup({
 		{
 			"andersevenrud/nvim_context_vt",
 		},
+		{
+			"goolord/alpha-nvim",
+			config = function()
+				require("alpha").setup(require("alpha.themes.startify").config)
+			end,
+		},
+		{
+			"SmiteshP/nvim-navic",
+			-- config = function()
+			-- 	require("nvim-navic").setup({
+			-- 		lsp = {
+			-- 			auto_attach = true,
+			-- 		},
+			-- 		highlight = true,
+			-- 	})
+			-- end,
+			-- init = function()
+			-- 	vim.g.navic_silence = true
+			-- 	vim.lsp.on_attach(function(client, buffer)
+			-- 		if client.supports_method("textDocument/documentSymbol") then
+			-- 			require("nvim-navic").attach(client, buffer)
+			-- 		end
+			-- 	end)
+			-- end,
+			-- opts = function()
+			-- 	return {
+			-- 		separator = " ",
+			-- 		highlight = true,
+			-- 		depth_limit = 5,
+			-- 		icons = LazyVim.config.icons.kinds,
+			-- 		lazy_update_context = true,
+			-- 	}
+			-- end,
+			init = function()
+				local navic = require("nvim-navic")
+				navic.setup({
+					icons = {
+						File = "󰈙 ",
+						Module = " ",
+						Namespace = "󰌗 ",
+						Package = " ",
+						Class = "󰌗 ",
+						Method = "󰆧 ",
+						Property = " ",
+						Field = " ",
+						Constructor = " ",
+						Enum = "󰕘",
+						Interface = "󰕘",
+						Function = "󰊕 ",
+						Variable = "󰆧 ",
+						Constant = "󰏿 ",
+						String = "󰀬 ",
+						Number = "󰎠 ",
+						Boolean = "◩ ",
+						Array = "󰅪 ",
+						Object = "󰅩 ",
+						Key = "󰌋 ",
+						Null = "󰟢 ",
+						EnumMember = " ",
+						Struct = "󰌗 ",
+						Event = " ",
+						Operator = "󰆕 ",
+						TypeParameter = "󰊄 ",
+					},
+					lsp = {
+						auto_attach = true,
+						preference = nil,
+					},
+					highlight = false,
+					separator = " > ",
+					depth_limit = 0,
+					depth_limit_indicator = "..",
+					safe_output = true,
+					lazy_update_context = false,
+					click = false,
+					format_text = function(text)
+						return text
+					end,
+				})
+			end,
+		},
+		{
+			"toppair/peek.nvim",
+			event = { "VeryLazy" },
+			build = "deno task --quiet build:fast",
+			config = function()
+				require("peek").setup()
+				vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+				vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+			end,
+		},
+		{
+			"iamcco/markdown-preview.nvim",
+			cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+			ft = { "markdown" },
+			build = function()
+				vim.fn["mkdp#util#install"]()
+			end,
+		},
+
+		-- install with yarn or npm
+		{
+			"iamcco/markdown-preview.nvim",
+			cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+			build = "cd app && yarn install",
+			init = function()
+				vim.g.mkdp_filetypes = { "markdown" }
+			end,
+			ft = { "markdown" },
+		},
 
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
@@ -397,7 +604,7 @@ require("mason-lspconfig").setup_handlers({
 })
 
 -- lspのハンドラーに設定
-capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { focusable = true })
 
@@ -555,6 +762,14 @@ local diagnostics = null_ls.builtins.diagnostics
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 -- local augroup = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
 
+vim.diagnostic.config({
+	virtual_text = {
+		format = function(diagnostic)
+			return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
+		end,
+	},
+})
+
 null_ls.setup({
 	debug = false,
 	sources = {
@@ -566,7 +781,13 @@ null_ls.setup({
 		formatting.gofumpt,
 	},
 	on_attach = function(client, bufnr)
+		local navic = require("nvim-navic")
+		local navbuddy = require("nvim-navbuddy")
 		if client.supports_method("textDocument/formatting") then
+			if client.server_capabilities.documentSymbolProvider then
+				navic.attach(client, bufnr)
+				navbuddy.attach(client, bufnr)
+			end
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				group = augroup,
