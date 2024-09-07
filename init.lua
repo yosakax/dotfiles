@@ -621,6 +621,9 @@ require("mason-lspconfig").setup_handlers({
 	-- 	require("lspconfig")[server_name].setup({})
 	-- end,
 	function(server_name)
+		if server_name == "tsserver" then
+			server_name = "ts_ls"
+		end
 		require("lspconfig")[server_name].setup({
 			capabilities = require("cmp_nvim_lsp").default_capabilities(),
 		})
