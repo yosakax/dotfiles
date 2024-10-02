@@ -803,6 +803,8 @@ null_ls.setup({
 		formatting.prettier,
 		formatting.clang_format,
 		formatting.gofumpt,
+		formatting.typstfmt,
+		diagnostics.codespell,
 	},
 	on_attach = function(client, bufnr)
 		local navic = require("nvim-navic")
@@ -819,6 +821,10 @@ null_ls.setup({
 				callback = function()
 					-- vim.lsp.buf.formatting_sync()
 					vim.lsp.buf.format({ async = false })
+					local last_line = vim.fn.getline("$")
+					if last_line ~= "" then
+						vim.fn.append(vim.fn.line("$"), "")
+					end
 				end,
 			})
 		end
@@ -833,6 +839,10 @@ lspconfig.rust_analyzer.setup({
 			buffer = bufnr,
 			callback = function()
 				vim.lsp.buf.format({ async = false })
+				local last_line = vim.fn.getline("$")
+				if last_line ~= "" then
+					vim.fn.append(vim.fn.line("$"), "")
+				end
 			end,
 		})
 		-- 診断情報の表示設定
@@ -844,3 +854,4 @@ lspconfig.rust_analyzer.setup({
 		})
 	end,
 })
+
