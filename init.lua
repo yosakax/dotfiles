@@ -30,8 +30,8 @@ vim.cmd("highlight Comment ctermfg=LightCyan")
 -- 折り返し
 vim.opt.wrap = true
 vim.opt.expandtab = true
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 -- マウスを有効に
 vim.opt.mouse = "a"
 vim.opt.laststatus = 3
@@ -568,6 +568,15 @@ require("lazy").setup({
 				})
 			end,
 		},
+		{
+			"MeanderingProgrammer/render-markdown.nvim",
+			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+			---@module 'render-markdown'
+			---@type render.md.UserConfig
+			opts = {},
+		},
 
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
@@ -804,6 +813,7 @@ null_ls.setup({
 		formatting.clang_format,
 		formatting.gofumpt,
 		formatting.typstfmt,
+		formatting.shfmt,
 		diagnostics.codespell,
 	},
 	on_attach = function(client, bufnr)
