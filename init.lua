@@ -570,13 +570,22 @@ require("lazy").setup({
 		},
 		{
 			"MeanderingProgrammer/render-markdown.nvim",
-			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-			---@module 'render-markdown'
-			---@type render.md.UserConfig
-			opts = {},
+			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, 
+       -- if you use the mini.nvim suite
+			 -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, 
+       -- if you use standalone mini plugins
+			 -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, 
+       -- if you prefer nvim-web-devicons
+			-- -@module 'render-markdown'
+			-- -@type render.md.UserConfig
+			-- opts = {},
 		},
+    {
+      "brenoprata10/nvim-highlight-colors",
+      init = function()
+        require("nvim-highlight-colors").setup({})
+      end
+    }
 
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
@@ -626,9 +635,6 @@ require("lualine").setup()
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
-	-- function(server_name)
-	-- 	require("lspconfig")[server_name].setup({})
-	-- end,
 	function(server_name)
 		require("lspconfig")[server_name].setup({
 			capabilities = require("cmp_nvim_lsp").default_capabilities(),
@@ -819,11 +825,11 @@ null_ls.setup({
 	on_attach = function(client, bufnr)
 		local navic = require("nvim-navic")
 		local navbuddy = require("nvim-navbuddy")
+		if client.server_capabilities.documentSymbolProvider then
+			navic.attach(client, bufnr)
+			navbuddy.attach(client, bufnr)
+		end
 		if client.supports_method("textDocument/formatting") then
-			if client.server_capabilities.documentSymbolProvider then
-				navic.attach(client, bufnr)
-				navbuddy.attach(client, bufnr)
-			end
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				group = augroup,
@@ -832,6 +838,7 @@ null_ls.setup({
 					-- vim.lsp.buf.formatting_sync()
 					vim.lsp.buf.format({ async = false })
 					local last_line = vim.fn.getline("$")
+					-- 最終行に改行を挟む
 					if last_line ~= "" then
 						vim.fn.append(vim.fn.line("$"), "")
 					end
@@ -844,6 +851,12 @@ null_ls.setup({
 local lspconfig = require("lspconfig")
 lspconfig.rust_analyzer.setup({
 	on_attach = function(client, bufnr)
+		local navic = require("nvim-navic")
+		local navbuddy = require("nvim-navbuddy")
+		if client.server_capabilities.documentSymbolProvider then
+			navic.attach(client, bufnr)
+			navbuddy.attach(client, bufnr)
+		end
 		-- 保存時に自動でフォーマットを実行
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			buffer = bufnr,
