@@ -404,7 +404,7 @@ require("lazy").setup({
 			dependencies = {
 				"nvim-tree/nvim-web-devicons",
 			},
-			config = function()
+			config = function(bufnr)
 				local function my_on_attach(bufnr)
 					local api = require("nvim-tree.api")
 
@@ -442,14 +442,14 @@ require("lazy").setup({
 		},
 		{
 			"SmiteshP/nvim-navic",
-			-- config = function()
-			-- 	require("nvim-navic").setup({
-			-- 		lsp = {
-			-- 			auto_attach = true,
-			-- 		},
-			-- 		highlight = true,
-			-- 	})
-			-- end,
+			config = function()
+				require("nvim-navic").setup({
+					lsp = {
+						auto_attach = true,
+					},
+					highlight = true,
+				})
+			end,
 			-- init = function()
 			-- 	vim.g.navic_silence = true
 			-- 	vim.lsp.on_attach(function(client, buffer)
@@ -570,22 +570,22 @@ require("lazy").setup({
 		},
 		{
 			"MeanderingProgrammer/render-markdown.nvim",
-			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, 
-       -- if you use the mini.nvim suite
-			 -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, 
-       -- if you use standalone mini plugins
-			 -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, 
-       -- if you prefer nvim-web-devicons
+			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
+			-- if you use the mini.nvim suite
+			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' },
+			-- if you use standalone mini plugins
+			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+			-- if you prefer nvim-web-devicons
 			-- -@module 'render-markdown'
 			-- -@type render.md.UserConfig
 			-- opts = {},
 		},
-    {
-      "brenoprata10/nvim-highlight-colors",
-      init = function()
-        require("nvim-highlight-colors").setup({})
-      end
-    }
+		{
+			"brenoprata10/nvim-highlight-colors",
+			init = function()
+				require("nvim-highlight-colors").setup({})
+			end,
+		},
 
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
@@ -671,6 +671,7 @@ cmp.setup({
 		{ name = "luasnip" },
 	}, {
 		{ name = "buffer" },
+		{ name = "path" },
 	}),
 })
 
