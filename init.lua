@@ -38,12 +38,7 @@ vim.opt.laststatus = 3
 
 vim.opt.pumblend = 20
 vim.opt.termguicolors = true
--- 背景透過
--- highlight Normal ctermbg=NONE guibg=NONE
--- highlight NonText ctermbg=NONE guibg=NONE
--- highlight LineNr ctermbg=NONE guibg=NONE
--- highlight Folded ctermbg=NONE guibg=NONE
--- highlight EndOfBuffer ctermbg=NONE guibg=NONE
+
 -- set update time for git plugin
 vim.opt.updatetime = 300
 
@@ -84,10 +79,20 @@ require("lazy").setup({
 		{
 			"tpope/vim-commentary",
 		},
-		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+		{
+			"nvim-treesitter/nvim-treesitter",
+			build = ":TSUpdate",
+			setup = function()
+				require("nvim-treesitter.configs").setup({
+					ensure_installed = { "c", "lua", "vim", "vimdoc", "python", "javascript", "rust" },
+					sync_install = false,
+					auto_install = true,
+				})
+			end,
+		},
 		{
 			"folke/tokyonight.nvim",
-			lazy = true, -- make sure we load this during startup if it is your main colorscheme
+			lazy = false, -- make sure we load this during startup if it is your main colorscheme
 			priority = 1000, -- make sure to load this before all the other start plugins
 			config = function()
 				-- load the colorscheme here
@@ -166,48 +171,52 @@ require("lazy").setup({
 		{
 			"nvim-lualine/lualine.nvim",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
-			options = {
-				icons_enabled = true,
-				theme = "auto",
-				component_separators = { left = "", right = "" },
-				section_separators = { left = "", right = "" },
-				disabled_filetypes = {
-					statusline = {},
+			init = function()
+				require("lualine").setup({
+					options = {
+						icons_enabled = true,
+						theme = "auto",
+						component_separators = { left = "", right = "" },
+						section_separators = { left = "", right = "" },
+						disabled_filetypes = {
+							statusline = {},
+							winbar = {},
+						},
+						ignore_focus = {},
+						always_divide_middle = true,
+						globalstatus = true,
+						refresh = {
+							statusline = 500,
+							tabline = 1000,
+							winbar = 1000,
+						},
+					},
+					sections = {
+						lualine_a = { "mode" },
+						lualine_b = { "branch", "diff", "diagnostics" },
+						lualine_c = { "filename" },
+						lualine_x = { "encoding", "fileformat", "filetype" },
+						lualine_y = { "progress" },
+						lualine_z = { "selectioncount" },
+					},
+					inactive_sections = {
+						lualine_a = {},
+						lualine_b = {},
+						lualine_c = { "filename" },
+						lualine_x = { "location" },
+						lualine_y = {},
+						lualine_z = {},
+					},
+					tabline = {},
 					winbar = {},
-				},
-				ignore_focus = {},
-				always_divide_middle = true,
-				globalstatus = false,
-				refresh = {
-					statusline = 1000,
-					tabline = 1000,
-					winbar = 1000,
-				},
-			},
-			sections = {
-				lualine_a = { "mode" },
-				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { "filename" },
-				lualine_x = { "encoding", "fileformat", "filetype" },
-				lualine_y = { "progress" },
-				lualine_z = { "location" },
-			},
-			inactive_sections = {
-				lualine_a = {},
-				lualine_b = {},
-				lualine_c = { "filename" },
-				lualine_x = { "location" },
-				lualine_y = {},
-				lualine_z = {},
-			},
-			tabline = {},
-			winbar = {},
-			inactive_winbar = {},
-			extensions = {},
+					inactive_winbar = {},
+					extensions = {},
+				})
+			end,
 		},
 
 		-- local plugins need to be explicitly configured with dir
-		{ dir = "~/projects/secret.nvim" },
+		-- { dir = "~/projects/secret.nvim" },
 
 		{
 			"folke/noice.nvim",
@@ -516,6 +525,9 @@ require("lazy").setup({
 			end,
 		},
 		{
+			"rest-nvim/rest.nvim",
+		},
+		{
 			"toppair/peek.nvim",
 			event = { "VeryLazy" },
 			build = "deno task --quiet build:fast",
@@ -569,21 +581,21 @@ require("lazy").setup({
 			end,
 		},
 		{
-			"MeanderingProgrammer/render-markdown.nvim",
-			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
-			-- if you use the mini.nvim suite
-			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' },
-			-- if you use standalone mini plugins
-			-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-			-- if you prefer nvim-web-devicons
-			-- -@module 'render-markdown'
-			-- -@type render.md.UserConfig
-			-- opts = {},
-		},
-		{
 			"brenoprata10/nvim-highlight-colors",
 			init = function()
 				require("nvim-highlight-colors").setup({})
+			end,
+		},
+		{
+			"danymat/neogen",
+			config = true,
+			-- Uncomment next line if you want to follow only stable versions
+			-- version = "*",
+			setup = function()
+				require("neogen").setup({
+					snippet_engine = "luasnip",
+					input_after_comment = true,
+				})
 			end,
 		},
 
@@ -629,13 +641,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-require("lualine").setup()
-
 -- プラグインの設定
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
 	function(server_name)
+		if server_name == "tinymist" then
+			return
+		end
 		require("lspconfig")[server_name].setup({
 			capabilities = require("cmp_nvim_lsp").default_capabilities(),
 		})
@@ -819,7 +832,7 @@ null_ls.setup({
 		formatting.prettier,
 		formatting.clang_format,
 		formatting.gofumpt,
-		formatting.typstfmt,
+		-- formatting.typstfmt,
 		formatting.shfmt,
 		diagnostics.codespell,
 	},
@@ -876,6 +889,27 @@ lspconfig.rust_analyzer.setup({
 				vim.diagnostic.open_float(nil, { focusable = true })
 			end,
 		})
+	end,
+})
+
+lspconfig.tinymist.setup({
+	single_file_support = true,
+	offset_encoding = "utf-8",
+	root_dir = function()
+		return vim.fn.getcwd()
+	end,
+	settings = {},
+})
+
+-- 日本語入力ON時のカーソルの色を設定
+vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
+vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
+-- ColorSchemeイベントを監視し、カラースキーム変更時に色を調整する
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "*",
+	callback = function()
+		vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
+		vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
 	end,
 })
 
