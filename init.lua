@@ -36,8 +36,16 @@ vim.opt.shiftwidth = 2
 vim.opt.mouse = "a"
 vim.opt.laststatus = 3
 
-vim.opt.pumblend = 20
+-- vim.opt.winblend = 100
+vim.opt.pumblend = 0
 vim.opt.termguicolors = true
+
+-- 背景透過
+-- highlight Normal ctermbg=NONE guibg=NONE
+-- highlight NonText ctermbg=NONE guibg=NONE
+-- highlight LineNr ctermbg=NONE guibg=NONE
+-- highlight Folded ctermbg=NONE guibg=NONE
+-- highlight EndOfBuffer ctermbg=NONE guibg=NONE
 
 -- set update time for git plugin
 vim.opt.updatetime = 300
@@ -109,7 +117,7 @@ require("lazy").setup({
 		},
 		-- I have a separate config.mappings file where I require which-key.
 		-- With lazy the plugin will be automatically loaded when it is required somewhere
-		{ "folke/which-key.nvim", lazy = true },
+		{ "folke/which-key.nvim", lazy = false },
 
 		{
 			"nvim-neorg/neorg",
@@ -130,6 +138,105 @@ require("lazy").setup({
 			-- init is called during startup. Configuration for vim plugins typically should be set in an init function
 			init = function()
 				vim.g.startuptime_tries = 10
+			end,
+		},
+		-- copilot
+		{
+			"zbirenbaum/copilot.lua",
+			cmd = "Copilot",
+			config = function()
+				require("copilot").setup({
+					suggestion = { enabled = false },
+					panel = { enabled = false },
+					copilot_node_command = "node",
+				})
+			end,
+		},
+		{
+			"zbirenbaum/copilot-cmp",
+			config = function()
+				require("copilot_cmp").setup()
+			end,
+		},
+		{
+			"zbirenbaum/copilot-cmp",
+			config = function()
+				require("copilot_cmp").setup({
+					suggestion = { enabled = false },
+					panel = { enabled = false },
+				})
+			end,
+		},
+		{
+			"CopilotC-Nvim/CopilotChat.nvim",
+			branch = "main",
+			dependencies = {
+				{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+				{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+			},
+			build = "make tiktoken", -- Only on MacOS or Linux
+			opts = {
+				debug = true, -- Enable debugging
+				-- See Configuration section for rest
+			},
+			-- See Commands section for default commands if you want to lazy load on them
+			init = function()
+				require("CopilotChat").setup({
+					-- 回答を日本語にしてくれる設定に変更する
+					show_help = "yes",
+					prompts = {
+						Explain = {
+							prompt = "/COPILOT_EXPLAIN コードを日本語で説明してください",
+							mapping = "<leader>ce",
+							description = "コードの説明をお願いする",
+						},
+						Review = {
+							prompt = "/COPILOT_REVIEW コードを日本語でレビューしてください。",
+							mapping = "<leader>cr",
+							description = "コードのレビューをお願いする",
+						},
+						Fix = {
+							prompt = "/COPILOT_FIX このコードには問題があります。バグを修正したコードを表示してください。説明は日本語でお願いします。",
+							mapping = "<leader>cf",
+							description = "コードの修正をお願いする",
+						},
+						Optimize = {
+							prompt = "/COPILOT_REFACTOR 選択したコードを最適化し、パフォーマンスと可読性を向上させてください。説明は日本語でお願いします。",
+							mapping = "<leader>co",
+							description = "コードの最適化をお願いする",
+						},
+						Docs = {
+							prompt = "/COPILOT_GENERATE 選択したコードに関するドキュメントコメントを日本語で生成してください。",
+							mapping = "<leader>cd",
+							description = "コードのドキュメント作成をお願いする",
+						},
+						Tests = {
+							prompt = "/COPILOT_TESTS 選択したコードの詳細なユニットテストを書いてください。説明は日本語でお願いします。",
+							mapping = "<leader>ct",
+							description = "テストコード作成をお願いする",
+						},
+						FixDiagnostic = {
+							prompt = "コードの診断結果に従って問題を修正してください。修正内容の説明は日本語でお願いします。",
+							mapping = "<leader>cd",
+							description = "コードの修正をお願いする",
+							selection = require("CopilotChat.select").diagnostics,
+						},
+						Commit = {
+							prompt = "実装差分に対するコミットメッセージを日本語で記述してください。",
+							mapping = "<leader>cco",
+							description = "コミットメッセージの作成をお願いする",
+							selection = require("CopilotChat.select").gitdiff,
+						},
+						CommitStaged = {
+							prompt = "ステージ済みの変更に対するコミットメッセージを日本語で記述してください。",
+							mapping = "<leader>cs",
+							description = "ステージ済みのコミットメッセージの作成をお願いする",
+							selection = function(source)
+								return require("CopilotChat.select").gitdiff(source, true)
+							end,
+						},
+					},
+				})
 			end,
 		},
 
@@ -245,6 +352,21 @@ require("lazy").setup({
 						"MunifTanjim/nui.nvim",
 					},
 					opts = { lsp = { auto_attach = true } },
+					init = function()
+						require("nvim-navbuddy").setup({
+							window = {
+								size = { height = "30%", width = "100%" },
+								position = { row = "100%", col = "50%" },
+							},
+							-- set keybind
+							vim.keymap.set(
+								"n",
+								"<leader>nn",
+								"<cmd>lua require('nvim-navbuddy').open()<CR>",
+								{ noremap = true, silent = true }
+							),
+						})
+					end,
 				},
 			},
 		},
@@ -282,7 +404,7 @@ require("lazy").setup({
 				},
 				{
 					"<leader>cs",
-					"<cmd>Trouble symbols toggle focus=false<cr>",
+					"<cmd>Trouble symbols toggle focus=true<cr>",
 					desc = "Symbols (Trouble)",
 				},
 				{
@@ -524,9 +646,9 @@ require("lazy").setup({
 				})
 			end,
 		},
-		{
-			"rest-nvim/rest.nvim",
-		},
+		-- {
+		-- 	"rest-nvim/rest.nvim",
+		-- },
 		{
 			"toppair/peek.nvim",
 			event = { "VeryLazy" },
@@ -664,6 +786,14 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
 vim.opt.completeopt = "menu,menuone,noselect"
 
 local cmp = require("cmp")
+local has_words_before = function()
+	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+		return false
+	end
+	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
+end
+
 cmp.setup({
 	snippet = {
 		expand = function(args)
@@ -672,7 +802,14 @@ cmp.setup({
 	},
 	mapping = cmp.mapping.preset.insert({
 		["<S-tab>"] = cmp.mapping.select_prev_item(),
-		["<tab>"] = cmp.mapping.select_next_item(),
+		-- ["<tab>"] = cmp.mapping.select_next_item(),
+		["<Tab>"] = vim.schedule_wrap(function(fallback)
+			if cmp.visible() and has_words_before() then
+				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+			else
+				fallback()
+			end
+		end),
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Enter>"] = cmp.mapping.complete(),
@@ -681,8 +818,8 @@ cmp.setup({
 	}),
 	sources = cmp.config.sources({
 		{ name = "nvim_lsp" },
+		{ name = "copilot" },
 		{ name = "luasnip" },
-	}, {
 		{ name = "buffer" },
 		{ name = "path" },
 	}),
@@ -902,14 +1039,14 @@ lspconfig.tinymist.setup({
 })
 
 -- 日本語入力ON時のカーソルの色を設定
-vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
-vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
--- ColorSchemeイベントを監視し、カラースキーム変更時に色を調整する
-vim.api.nvim_create_autocmd("ColorScheme", {
-	pattern = "*",
-	callback = function()
-		vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
-		vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
-	end,
-})
+-- vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
+-- vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
+-- -- ColorSchemeイベントを監視し、カラースキーム変更時に色を調整する
+-- vim.api.nvim_create_autocmd("ColorScheme", {
+-- 	pattern = "*",
+-- 	callback = function()
+-- 		vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
+-- 		vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
+-- 	end,
+-- })
 
