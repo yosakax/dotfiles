@@ -559,7 +559,16 @@ require("lazy").setup({
 					vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
 				end
 
-				require("nvim-tree").setup({ on_attach = my_on_attach })
+				require("nvim-tree").setup({
+					on_attach = my_on_attach,
+					filters = {
+						git_ignored = false,
+						custom = {
+							"^\\.git",
+							"^node_modules",
+						},
+					},
+				})
 			end,
 		},
 		{
