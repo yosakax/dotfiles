@@ -39,6 +39,7 @@ vim.opt.laststatus = 3
 -- vim.opt.winblend = 100
 vim.opt.pumblend = 0
 vim.opt.termguicolors = true
+vim.g.editor_config = true
 
 -- 背景透過
 -- highlight Normal ctermbg=NONE guibg=NONE
@@ -774,17 +775,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- プラグインの設定
 require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-lspconfig").setup_handlers({
-	function(server_name)
-		if server_name == "tinymist" then
-			return
-		end
-		require("lspconfig")[server_name].setup({
-			capabilities = require("cmp_nvim_lsp").default_capabilities(),
-		})
-	end,
-})
+require("mason-lspconfig").setup({ automatic_enable = true })
 
 -- lspのハンドラーに設定
 -- capabilities = require("cmp_nvim_lsp").default_capabilities()
