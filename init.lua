@@ -24,6 +24,12 @@ vim.opt.list = true
 vim.opt.showmatch = true
 vim.opt.clipboard:append("unnamedplus")
 vim.opt.autoindent = true
+-- ファイル変更検知。自動読み込み設定
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+	command = "if mode() != 'c' | checktime | endif",
+	pattern = "*",
+})
 -- 構文ごとに色分け
 vim.cmd("syntax on")
 vim.cmd("highlight Comment ctermfg=LightCyan")
