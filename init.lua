@@ -162,12 +162,6 @@ require("lazy").setup({
 		{
 			"zbirenbaum/copilot-cmp",
 			config = function()
-				require("copilot_cmp").setup()
-			end,
-		},
-		{
-			"zbirenbaum/copilot-cmp",
-			config = function()
 				require("copilot_cmp").setup({
 					suggestion = { enabled = false },
 					panel = { enabled = false },
@@ -824,7 +818,7 @@ cmp.setup({
 	}),
 	sources = cmp.config.sources({
 		{ name = "nvim_lsp" },
-		{ name = "copilot" },
+		-- { name = "copilot" },
 		{ name = "luasnip" },
 		{ name = "buffer" },
 		{ name = "path" },
