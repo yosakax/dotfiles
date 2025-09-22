@@ -341,11 +341,46 @@ require("lazy").setup({
 				"rcarriga/nvim-notify",
 			},
 		},
-		{ "neovim/nvim-lspconfig" },
-		{ "williamboman/mason.nvim" },
+		-- { "neovim/nvim-lspconfig" },
+		-- { "williamboman/mason.nvim" },
+		-- {
+		-- 	"williamboman/mason-lspconfig.nvim",
+		-- 	dependencies = {
+		-- 		{
+		-- 			"SmiteshP/nvim-navbuddy",
+		-- 			dependencies = {
+		-- 				"SmiteshP/nvim-navic",
+		-- 				"MunifTanjim/nui.nvim",
+		-- 			},
+		-- 			opts = { lsp = { auto_attach = true } },
+		-- 			init = function()
+		-- 				require("nvim-navbuddy").setup({
+		-- 					window = {
+		-- 						size = { height = "30%", width = "100%" },
+		-- 						position = { row = "100%", col = "50%" },
+		-- 					},
+		-- 					-- set keybind
+		-- 					vim.keymap.set(
+		-- 						"n",
+		-- 						"<leader>nn",
+		-- 						"<cmd>lua require('nvim-navbuddy').open()<CR>",
+		-- 						{ noremap = true, silent = true }
+		-- 					),
+		-- 				})
+		-- 			end,
+		-- 		},
+		-- 	},
+		-- },
 		{
-			"williamboman/mason-lspconfig.nvim",
+			"mason-org/mason.nvim",
+			opts = {},
+		},
+		{
+			"mason-org/mason-lspconfig.nvim",
+			opts = {},
 			dependencies = {
+				{ "mason-org/mason.nvim", opts = {} },
+				"neovim/nvim-lspconfig",
 				{
 					"SmiteshP/nvim-navbuddy",
 					dependencies = {
@@ -775,7 +810,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- プラグインの設定
 require("mason").setup()
-require("mason-lspconfig").setup({ automatic_enable = true })
+-- require("mason-lspconfig").setup({ automatic_enable = true })
+require("mason-lspconfig").setup()
 
 -- lspのハンドラーに設定
 -- capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -999,43 +1035,56 @@ null_ls.setup({
 	end,
 })
 
-local lspconfig = require("lspconfig")
-lspconfig.rust_analyzer.setup({
-	on_attach = function(client, bufnr)
-		local navic = require("nvim-navic")
-		local navbuddy = require("nvim-navbuddy")
-		if client.server_capabilities.documentSymbolProvider then
-			navic.attach(client, bufnr)
-			navbuddy.attach(client, bufnr)
-		end
-		-- 保存時に自動でフォーマットを実行
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "rust",
+	callback = function(args)
+		vim.lsp.start({
+			name = "rust-analyzer",
+			cmd = { "rust-analyzer" },
+			root_dir = vim.fs.dirname(vim.fs.find({ "Cargo.toml", ".git" }, { upward = true })[1]),
+			settings = {
+				["rust-analyzer"] = {
+					diagnostics = {
+						enable = true,
+						disabled = { "unresolved-proc-macro" }, -- example: disable a specific diagnostic
+					},
+					checkOnSave = {
+						command = "clippy",
+					},
+					assist = {
+						importGranularity = "module",
+						importPrefix = "by_self",
+					},
+					formatting = {
+						enable = true,
+					},
+				},
+			},
+		})
+	end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+	callback = function(ev)
+		-- 保存時に自動フォーマット
 		vim.api.nvim_create_autocmd("BufWritePre", {
-			buffer = bufnr,
+			pattern = { "*.rs" }, -- none-lsでフォーマッターを使用しない拡張子のみ
 			callback = function()
-				vim.lsp.buf.format({ async = false })
+				vim.lsp.buf.format({
+					buffer = ev.buf,
+					async = false,
+				})
+				-- vim.lsp.buf.formatting_sync()
+				-- vim.lsp.buf.format({ async = false })
 				local last_line = vim.fn.getline("$")
+				-- 最終行に改行を挟む
 				if last_line ~= "" then
 					vim.fn.append(vim.fn.line("$"), "")
 				end
 			end,
 		})
-		-- 診断情報の表示設定
-		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-			buffer = bufnr,
-			callback = function()
-				vim.diagnostic.open_float(nil, { focusable = true })
-			end,
-		})
 	end,
-})
-
-lspconfig.tinymist.setup({
-	single_file_support = true,
-	offset_encoding = "utf-8",
-	root_dir = function()
-		return vim.fn.getcwd()
-	end,
-	settings = {},
 })
 
 -- 日本語入力ON時のカーソルの色を設定
