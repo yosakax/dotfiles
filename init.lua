@@ -1,5 +1,4 @@
 -- base settings
-
 -- viと非互換のvimの独自拡張機能を使用
 vim.opt.compatible = false
 vim.opt.encoding = "utf-8"
@@ -46,6 +45,7 @@ vim.opt.laststatus = 3
 vim.opt.pumblend = 0
 vim.opt.termguicolors = true
 vim.g.editor_config = true
+vim.opt.relativenumber = true
 
 -- 背景透過
 -- highlight Normal ctermbg=NONE guibg=NONE
@@ -179,6 +179,14 @@ require("lazy").setup({
 			opts = {
 				debug = true, -- Enable debugging
 				-- See Configuration section for rest
+				window = {
+					layout = "vertical",
+					-- width = 80, -- Fixed width in columns
+					-- height = 20, -- Fixed height in rows
+					border = "rounded", -- 'single', 'double', 'rounded', 'solid'
+					-- title = "🤖 AI Assistant",
+					-- zindex = 100, -- Ensure window stays on top
+				},
 			},
 			-- See Commands section for default commands if you want to lazy load on them
 			init = function()
@@ -302,7 +310,14 @@ require("lazy").setup({
 					sections = {
 						lualine_a = { "mode" },
 						lualine_b = { "branch", "diff", "diagnostics" },
-						lualine_c = { "filename" },
+						lualine_c = {
+							"filename",
+							{
+								"navic",
+								color_correction = "dynamic",
+								navic_opts = nil,
+							},
+						},
 						lualine_x = { "encoding", "fileformat", "filetype" },
 						lualine_y = { "progress" },
 						lualine_z = { "selectioncount" },
@@ -341,36 +356,20 @@ require("lazy").setup({
 				"rcarriga/nvim-notify",
 			},
 		},
-		-- { "neovim/nvim-lspconfig" },
-		-- { "williamboman/mason.nvim" },
-		-- {
-		-- 	"williamboman/mason-lspconfig.nvim",
-		-- 	dependencies = {
-		-- 		{
-		-- 			"SmiteshP/nvim-navbuddy",
-		-- 			dependencies = {
-		-- 				"SmiteshP/nvim-navic",
-		-- 				"MunifTanjim/nui.nvim",
-		-- 			},
-		-- 			opts = { lsp = { auto_attach = true } },
-		-- 			init = function()
-		-- 				require("nvim-navbuddy").setup({
-		-- 					window = {
-		-- 						size = { height = "30%", width = "100%" },
-		-- 						position = { row = "100%", col = "50%" },
-		-- 					},
-		-- 					-- set keybind
-		-- 					vim.keymap.set(
-		-- 						"n",
-		-- 						"<leader>nn",
-		-- 						"<cmd>lua require('nvim-navbuddy').open()<CR>",
-		-- 						{ noremap = true, silent = true }
-		-- 					),
-		-- 				})
-		-- 			end,
-		-- 		},
-		-- 	},
-		-- },
+		{
+			"neovim/nvim-lspconfig",
+			config = function()
+				vim.lsp.config("lua_ls", {
+					settings = {
+						Lua = {
+							diagnostics = {
+								globals = { "vim" },
+							},
+						},
+					},
+				})
+			end,
+		},
 		{
 			"mason-org/mason.nvim",
 			opts = {},
@@ -413,16 +412,6 @@ require("lazy").setup({
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-path" },
 		{ "saadparwaiz1/cmp_luasnip" },
-		-- {
-		-- 	"nvimdev/lspsaga.nvim",
-		-- 	config = function()
-		-- 		require("lspsaga").setup({})
-		-- 	end,
-		-- 	dependencies = {
-		-- 		"nvim-treesitter/nvim-treesitter", -- optional
-		-- 		"nvim-tree/nvim-web-devicons", -- optional
-		-- 	},
-		-- },
 		{
 			"folke/trouble.nvim",
 			opts = {}, -- for default options, refer to the configuration section for custom setup.
@@ -488,6 +477,76 @@ require("lazy").setup({
 						changedelete = { text = "~" },
 						untracked = { text = "┆" },
 					},
+					on_attach = function(bufnr)
+						local gitsigns = require("gitsigns")
+
+						local function map(mode, l, r, opts)
+							opts = opts or {}
+							opts.buffer = bufnr
+							vim.keymap.set(mode, l, r, opts)
+						end
+
+						-- Navigation
+						map("n", "]c", function()
+							if vim.wo.diff then
+								vim.cmd.normal({ "]c", bang = true })
+							else
+								gitsigns.nav_hunk("next")
+							end
+						end)
+
+						map("n", "[c", function()
+							if vim.wo.diff then
+								vim.cmd.normal({ "[c", bang = true })
+							else
+								gitsigns.nav_hunk("prev")
+							end
+						end)
+
+						-- Actions
+						map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "stage_hunk" })
+						map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "reset_hunc" })
+
+						map("v", "<leader>hs", function()
+							gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+						end)
+
+						map("v", "<leader>hr", function()
+							gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+						end)
+
+						map("n", "<leader>hS", gitsigns.stage_buffer)
+						map("n", "<leader>hR", gitsigns.reset_buffer)
+						map("n", "<leader>hp", gitsigns.preview_hunk)
+						map("n", "<leader>hi", gitsigns.preview_hunk_inline)
+
+						map("n", "<leader>hb", function()
+							gitsigns.blame_line({ full = true })
+						end)
+
+						map("n", "<leader>hd", gitsigns.diffthis, { desc = "diff this" })
+
+						map("n", "<leader>hD", function()
+							gitsigns.diffthis("~")
+						end, { desc = "diff diss in split" })
+
+						map("n", "<leader>hQ", function()
+							gitsigns.setqflist("all")
+						end)
+						map("n", "<leader>hq", gitsigns.setqflist, { desc = "set quick fix list" })
+
+						-- Toggles
+						map(
+							"n",
+							"<leader>tb",
+							gitsigns.toggle_current_line_blame,
+							{ desc = "toggle current line blame" }
+						)
+						map("n", "<leader>tw", gitsigns.toggle_word_diff, { desc = "toggle word diff" })
+
+						-- Text object
+						-- map({ "o", "x" }, "ih", gitsigns.select_hunk)
+					end,
 				})
 			end,
 		},
@@ -564,47 +623,60 @@ require("lazy").setup({
 				require("ibl").setup({ indent = { highlight = highlight } })
 			end,
 		},
+		-- {
+		-- 	"nvim-tree/nvim-tree.lua",
+		-- 	version = "*",
+		-- 	lazy = false,
+		-- 	dependencies = {
+		-- 		"nvim-tree/nvim-web-devicons",
+		-- 	},
+		-- 	config = function(bufnr)
+		-- 		local function my_on_attach(_bufnr)
+		-- 			local api = require("nvim-tree.api")
+
+		-- 			local function opts(desc)
+		-- 				return {
+		-- 					desc = "nvim-tree: " .. desc,
+		-- 					buffer = bufnr,
+		-- 					noremap = true,
+		-- 					silent = true,
+		-- 					nowait = true,
+		-- 				}
+		-- 			end
+
+		-- 			-- default mappings
+		-- 			api.config.mappings.default_on_attach(bufnr)
+
+		-- 			-- custom mappings
+		-- 			vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
+		-- 			vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+		-- 			vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+		-- 			vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+		-- 		end
+
+		-- 		require("nvim-tree").setup({
+		-- 			on_attach = my_on_attach,
+		-- 			filters = {
+		-- 				-- git_ignored = false,
+		-- 				custom = {
+		-- 					"^\\.git",
+		-- 					"^node_modules",
+		-- 				},
+		-- 			},
+		-- 		})
+		-- 	end,
+		-- },
 		{
-			"nvim-tree/nvim-tree.lua",
-			version = "*",
-			lazy = false,
+			"nvim-neo-tree/neo-tree.nvim",
+			branch = "v3.x",
 			dependencies = {
-				"nvim-tree/nvim-web-devicons",
+				"nvim-lua/plenary.nvim",
+				"MunifTanjim/nui.nvim",
+				"nvim-tree/nvim-web-devicons", -- optional, but recommended
 			},
-			config = function(bufnr)
-				local function my_on_attach(bufnr)
-					local api = require("nvim-tree.api")
-
-					local function opts(desc)
-						return {
-							desc = "nvim-tree: " .. desc,
-							buffer = bufnr,
-							noremap = true,
-							silent = true,
-							nowait = true,
-						}
-					end
-
-					-- default mappings
-					api.config.mappings.default_on_attach(bufnr)
-
-					-- custom mappings
-					vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
-					vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
-					vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
-					vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
-				end
-
-				require("nvim-tree").setup({
-					on_attach = my_on_attach,
-					filters = {
-						git_ignored = false,
-						custom = {
-							"^\\.git",
-							"^node_modules",
-						},
-					},
-				})
+			lazy = false, -- neo-tree will lazily load itself
+			config = function()
+				vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle<CR>")
 			end,
 		},
 		{
@@ -626,23 +698,6 @@ require("lazy").setup({
 					highlight = true,
 				})
 			end,
-			-- init = function()
-			-- 	vim.g.navic_silence = true
-			-- 	vim.lsp.on_attach(function(client, buffer)
-			-- 		if client.supports_method("textDocument/documentSymbol") then
-			-- 			require("nvim-navic").attach(client, buffer)
-			-- 		end
-			-- 	end)
-			-- end,
-			-- opts = function()
-			-- 	return {
-			-- 		separator = " ",
-			-- 		highlight = true,
-			-- 		depth_limit = 5,
-			-- 		icons = LazyVim.config.icons.kinds,
-			-- 		lazy_update_context = true,
-			-- 	}
-			-- end,
 			init = function()
 				local navic = require("nvim-navic")
 				navic.setup({
@@ -802,6 +857,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 require("mason").setup()
 -- require("mason-lspconfig").setup({ automatic_enable = true })
 require("mason-lspconfig").setup()
+vim.keymap.set("n", "<Leader>=", "<C-w>=", { desc = "均等なウィンドウサイズに調整" })
 
 -- lspのハンドラーに設定
 -- capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -816,7 +872,7 @@ local has_words_before = function()
 	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
 		return false
 	end
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+	local line, col = table.unpack(vim.api.nvim_win_get_cursor(0))
 	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
@@ -892,9 +948,6 @@ map("n", "<Space>bn", "<Cmd>BufferOrderByName<CR>", opts)
 map("n", "<Space>bd", "<Cmd>BufferOrderByDirectory<CR>", opts)
 map("n", "<Space>bl", "<Cmd>BufferOrderByLanguage<CR>", opts)
 map("n", "<Space>bw", "<Cmd>BufferOrderByWindowNumber<CR>", opts)
-
--- nvim-tree config
-map("n", "<C-b>", "<Cmd>NvimTreeToggle<CR>", opts)
 
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
@@ -993,6 +1046,7 @@ null_ls.setup({
 		formatting.black,
 		formatting.isort,
 		formatting.prettier,
+		formatting.prettierd,
 		formatting.clang_format,
 		formatting.gofumpt,
 		-- formatting.typstfmt,
