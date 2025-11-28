@@ -21,7 +21,7 @@ vim.opt.number = true
 vim.opt.listchars = { eol = "⏎", tab = ">-", trail = "·", extends = ">", precedes = "<" }
 vim.opt.list = true
 vim.opt.showmatch = true
-vim.opt.clipboard:append("unnamedplus")
+-- vim.opt.clipboard:append("unnamedplus")
 vim.opt.autoindent = true
 -- ファイル変更検知。自動読み込み設定
 vim.opt.autoread = true
@@ -47,6 +47,12 @@ vim.opt.termguicolors = true
 vim.g.editor_config = true
 vim.opt.relativenumber = true
 
+-- folder settings
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldlevel = 99
+vim.o.foldmethod = "expr"
+-- vim.o.foldtext = "" -- 任意; 既定の折り畳み表示が嫌いな人用
+
 -- 背景透過
 -- highlight Normal ctermbg=NONE guibg=NONE
 -- highlight NonText ctermbg=NONE guibg=NONE
@@ -61,8 +67,8 @@ vim.opt.updatetime = 300
 -- vim.opt.spell = true
 
 -- カーソル位置強調
--- vim.opt.cursorline = true
--- vim.opt.cursorcolumn = true
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -136,6 +142,11 @@ require("lazy").setup({
 					["core.defaults"] = {},
 				},
 			},
+		},
+		{
+			"zootedb0t/citruszest.nvim",
+			lazy = false,
+			priority = 1000,
 		},
 
 		{
@@ -291,7 +302,8 @@ require("lazy").setup({
 				require("lualine").setup({
 					options = {
 						icons_enabled = true,
-						theme = "auto",
+						-- theme = "auto",
+						theme = "powerline_dark",
 						component_separators = { left = "", right = "" },
 						section_separators = { left = "", right = "" },
 						disabled_filetypes = {
@@ -307,9 +319,9 @@ require("lazy").setup({
 							winbar = 1000,
 						},
 					},
-					sections = {
-						lualine_a = { "mode" },
-						lualine_b = { "branch", "diff", "diagnostics" },
+					winbar = {
+						lualine_a = { "tabs" },
+						-- lualine_b = { "branch", "diff", "diagnostics" },
 						lualine_c = {
 							"filename",
 							{
@@ -317,6 +329,20 @@ require("lazy").setup({
 								color_correction = "dynamic",
 								navic_opts = nil,
 							},
+						},
+						lualine_x = { "lsp_status" },
+						lualine_y = { "os.date('%H:%M:%S')", "data", "require'lsp-status'.status()" },
+					},
+					sections = {
+						lualine_a = { "mode" },
+						lualine_b = { "branch", "diff", "diagnostics" },
+						lualine_c = {
+							-- "filename",
+							-- {
+							--   "navic",
+							--   color_correction = "dynamic",
+							--   navic_opts = nil,
+							-- },
 						},
 						lualine_x = { "encoding", "fileformat", "filetype" },
 						lualine_y = { "progress" },
@@ -331,7 +357,6 @@ require("lazy").setup({
 						lualine_z = {},
 					},
 					tabline = {},
-					winbar = {},
 					inactive_winbar = {},
 					extensions = {},
 				})
@@ -477,6 +502,7 @@ require("lazy").setup({
 						changedelete = { text = "~" },
 						untracked = { text = "┆" },
 					},
+					word_diff = true,
 					on_attach = function(bufnr)
 						local gitsigns = require("gitsigns")
 
@@ -683,9 +709,48 @@ require("lazy").setup({
 			"andersevenrud/nvim_context_vt",
 		},
 		{
+			"MaximilianLloyd/ascii.nvim",
+			dependencies = {
+				"MunifTanjim/nui.nvim",
+			},
+		},
+		{
 			"goolord/alpha-nvim",
 			config = function()
 				require("alpha").setup(require("alpha.themes.startify").config)
+			end,
+			opts = function()
+				-- require("alpha").setup(require("alpha.themes.dashboard").config)
+				local top = require("alpha.themes.startify")
+				-- top.section.header.val = require("ascii").art.computers.linux.linux_rules
+				top.section.header.val = [[
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣶⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⢀⣠⣴⣶⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⡆⠀⢀⣴⣿⣿⣿⣿⠿⠟⠛⠛⠛⠻⠿⣿⣿⣿⣿⣦⡀⠀⢰⣿⣿⣷⣄⡀⠀⠀⠀⠀⠀⠀⠀ And you don't seem to understand
+⠀⠀⠀⠀⢀⣴⣿⣿⣿⠟⠉⠀⣴⣿⣿⣿⠟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⣿⣿⣿⣦⠀⠉⠻⢿⣿⣿⣦⡀⠀⠀⠀⠀⠀ A shame you seemed an honest man
+⠀⠀⢀⣴⣿⣿⡿⠋⠀⠀⠀⣼⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣧⠀⠀⠀⠙⢿⣿⣿⣦⡀⠀⠀⠀ And all the fears you hold so dear
+⠀⣰⣿⣿⡿⠉⠀⠀⠀⠀⢰⣿⣿⣿⠁⠀⠀⠀⠀⣤⣾⣿⣿⣿⣷⣦⠀⠀⠀⠀⠈⣿⣿⣿⡆⠀⠀⠀⠀⠈⠻⣿⣿⣦⠀⠀ Will turn to whisper in your ear
+⣼⣿⡿⡏⠀⠀⠀⠀⠀⠀⣼⣿⣿⡏⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢸⣿⣿⣷⠀⠀⠀⠀⠀⠀⢹⣿⣿⣧⠀ And you know what they say might hurt you
+⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⢿⣿⣿⡇⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⢸⣿⣿⣿⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⠀ And you know that it means so much
+⠘⣿⣿⣷⡄⠀⠀⠀⠀⠀⢸⣿⣿⣷⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⣼⣿⣿⡏⠀⠀⠀⠀⠀⢀⣾⣿⣿⠏⠀ And you don't even feel a thing
+⠀⠈⠻⣿⣿⣦⣄⠀⠀⠀⠀⢿⣿⣿⣇⠀⠀⠀⠀⠀⠉⠛⠛⠛⠉⠀⠀⠀⠀⠀⣸⣿⣿⣿⠁⠀⠀⠀⣠⣴⣿⣿⠟⠁⠀⠀
+⠀⠀⠀⠈⠻⣿⣿⣷⣤⡀⠀⠘⢿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⡿⠃⠀⢀⣠⣾⣿⣿⠿⠁⠀⠀⠀⠀ I am falling
+⠀⠀⣠⣤⡀⠈⠻⢿⣿⣿⣶⠀⠀⠻⣿⣿⣿⣷⣦⣄⠀⠀⠀⠀⠀⣠⣤⣾⣿⣿⡿⠏⠁⠀⣴⣿⣿⣿⠟⠉⢀⣤⣄⠀⠀⠀ I am fading
+⠀⠘⢿⢿⠇⠀⠀⠀⠉⠛⠛⠀⠀⠀⠈⠙⠿⣿⣿⣿⣷⠀⠀⠀⣾⣿⣿⣿⠿⠁⠀⠀⠀⠀⠙⠛⠋⠀⠀⠀⠸⣿⣿⠇⠀⠀ I have lost it all
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⠀⠀⠀⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠀⠀⠀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠀⠀⠀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢰⣵⣷⣄⠀⠀⠀⠀⠀⢀⣿⣿⣿⠀⠀⠀⣿⣿⣿⡄⠀⠀⠀⠀⠀⣠⣾⣷⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣷⣦⣄⣀⣤⣾⣿⡿⠋⠀⠀⠀⠘⣿⣿⣷⣤⣀⣠⣤⣾⣿⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠿⣿⣿⡟⠛⠁⠀⠀⠀⠀⠀⠀⠈⠘⠿⢿⣿⣿⠻⠏⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+]]
+
+				top.section.header.val = vim.split(top.section.header.val, "\n", { trimempty = true })
+				-- top.section.header.val = top.section.header.val .. require("ascii").art.text.neovim.sharp
+
+				return top.opts
 			end,
 		},
 		{
@@ -810,7 +875,37 @@ require("lazy").setup({
 				})
 			end,
 		},
-
+		{
+			"NStefan002/screenkey.nvim",
+			lazy = false,
+			version = "*", -- or branch = "main", to use the latest commit
+		},
+		{
+			"hat0uma/csvview.nvim",
+			---@module "csvview"
+			---@type CsvView.Options
+			opts = {
+				parser = { comments = { "#", "//" } },
+				keymaps = {
+					-- Text objects for selecting fields
+					textobject_field_inner = { "if", mode = { "o", "x" } },
+					textobject_field_outer = { "af", mode = { "o", "x" } },
+					-- Excel-like navigation:
+					-- Use <Tab> and <S-Tab> to move horizontally between fields.
+					-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+					-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+					jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+					jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+					jump_next_row = { "<Enter>", mode = { "n", "v" } },
+					jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+				},
+			},
+			cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+		},
+		{
+			"sarrisv/readermode.nvim",
+			opts = {},
+		},
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
 	-- Configure any other settings here. See the documentation for more details.
@@ -872,7 +967,7 @@ local has_words_before = function()
 	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
 		return false
 	end
-	local line, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
