@@ -21,7 +21,7 @@ vim.opt.number = true
 vim.opt.listchars = { eol = "⏎", tab = ">-", trail = "·", extends = ">", precedes = "<" }
 vim.opt.list = true
 vim.opt.showmatch = true
--- vim.opt.clipboard:append("unnamedplus")
+vim.opt.clipboard:append("unnamedplus")
 vim.opt.autoindent = true
 -- ファイル変更検知。自動読み込み設定
 vim.opt.autoread = true
@@ -404,7 +404,7 @@ require("lazy").setup({
 			opts = {},
 			dependencies = {
 				{ "mason-org/mason.nvim", opts = {} },
-				"neovim/nvim-lspconfig",
+				{ "neovim/nvim-lspconfig" },
 				{
 					"SmiteshP/nvim-navbuddy",
 					dependencies = {
@@ -650,60 +650,28 @@ require("lazy").setup({
 			end,
 		},
 		-- {
-		-- 	"nvim-tree/nvim-tree.lua",
-		-- 	version = "*",
-		-- 	lazy = false,
+		-- 	"nvim-neo-tree/neo-tree.nvim",
+		-- 	branch = "v3.x",
 		-- 	dependencies = {
-		-- 		"nvim-tree/nvim-web-devicons",
+		-- 		"nvim-lua/plenary.nvim",
+		-- 		"MunifTanjim/nui.nvim",
+		-- 		"nvim-tree/nvim-web-devicons", -- optional, but recommended
 		-- 	},
-		-- 	config = function(bufnr)
-		-- 		local function my_on_attach(_bufnr)
-		-- 			local api = require("nvim-tree.api")
-
-		-- 			local function opts(desc)
-		-- 				return {
-		-- 					desc = "nvim-tree: " .. desc,
-		-- 					buffer = bufnr,
-		-- 					noremap = true,
-		-- 					silent = true,
-		-- 					nowait = true,
-		-- 				}
-		-- 			end
-
-		-- 			-- default mappings
-		-- 			api.config.mappings.default_on_attach(bufnr)
-
-		-- 			-- custom mappings
-		-- 			vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
-		-- 			vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
-		-- 			vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
-		-- 			vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
-		-- 		end
-
-		-- 		require("nvim-tree").setup({
-		-- 			on_attach = my_on_attach,
-		-- 			filters = {
-		-- 				-- git_ignored = false,
-		-- 				custom = {
-		-- 					"^\\.git",
-		-- 					"^node_modules",
-		-- 				},
-		-- 			},
-		-- 		})
+		-- 	lazy = false, -- neo-tree will lazily load itself
+		-- 	config = function()
+		-- 		vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle<CR>")
 		-- 	end,
 		-- },
 		{
-			"nvim-neo-tree/neo-tree.nvim",
-			branch = "v3.x",
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"MunifTanjim/nui.nvim",
-				"nvim-tree/nvim-web-devicons", -- optional, but recommended
-			},
-			lazy = false, -- neo-tree will lazily load itself
-			config = function()
-				vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle<CR>")
-			end,
+			"stevearc/oil.nvim",
+			---@module 'oil'
+			---@type oil.SetupOpts
+			opts = {},
+			-- Optional dependencies
+			-- dependencies = { { "nvim-mini/mini.icons", opts = {} } },
+			dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+			-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+			lazy = false,
 		},
 		{
 			"andersevenrud/nvim_context_vt",
@@ -825,22 +793,13 @@ require("lazy").setup({
 			end,
 		},
 		{
-			"iamcco/markdown-preview.nvim",
-			-- run = "cd app && npm install",
-			cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-			ft = { "markdown" },
-			build = function()
-				vim.fn["mkdp#util#install"]()
-			end,
-		},
-		{
 			"akinsho/toggleterm.nvim",
 			version = "*",
 			config = true,
 			init = function()
 				require("toggleterm").setup({
 					size = 100,
-					open_mapping = [[<c-t>]],
+					open_mapping = { [[<c-t>]], [[<c-g>]] },
 					hide_numbers = true,
 					shade_filetypes = {},
 					shade_terminals = true,
@@ -855,6 +814,8 @@ require("lazy").setup({
 						-- border = 'single' | 'double' | 'shadow' | 'curved'
 					},
 				})
+				vim.keymap.set("n", "<C-g>", "<cmd>ToggleTerm direction=horizontal size=15<CR>")
+				vim.keymap.set("n", "<C-t>", "<cmd>ToggleTerm direction=float size=100<CR>")
 			end,
 		},
 		{
@@ -951,7 +912,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- プラグインの設定
 require("mason").setup()
 -- require("mason-lspconfig").setup({ automatic_enable = true })
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup({
+	ensure_installed = { "pyright", "ts_ls", "rust_analyzer" }, --"prettier", "prettierd", "black", "isort", "stylua" },
+})
 vim.keymap.set("n", "<Leader>=", "<C-w>=", { desc = "均等なウィンドウサイズに調整" })
 
 -- lspのハンドラーに設定
@@ -1237,4 +1200,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- 		vim.api.nvim_set_hl(0, "NonText", { ctermfg = "gray", ctermbg = "darkgray" })
 -- 	end,
 -- })
+
+-- ====================================================================
+-- ターミナルバッファの背景色のみを上書きする設定
+-- ====================================================================
+
+-- 💡 ターミナルで使いたい白系の背景色コードを設定（例: #EEEEEE または #FFFFFF）
+local TERMINAL_BG_COLOR = "#FFFFFF"
+local MAIN_BG_COLOR = "#000000" -- メインのカラースキームの背景色に合わせて設定（黒系）
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "*",
+	callback = function()
+		-- バッファがターミナルタイプの場合
+		if vim.bo.buftype == "terminal" then
+			-- 'Terminal' ハイライトグループの背景色を上書き
+			-- Terminal内の文字色（guifg）も必要に応じて変更すると見やすくなります。
+			vim.cmd("hi Terminal guibg=" .. TERMINAL_BG_COLOR .. " guifg=" .. MAIN_BG_COLOR)
+		else
+			-- ターミナルではないバッファに入った場合、上書きした色をクリアし、
+			-- 元のカラースキームの設定に戻す
+			vim.cmd("hi! clear Terminal")
+		end
+	end,
+})
 
