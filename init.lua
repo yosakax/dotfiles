@@ -400,6 +400,27 @@ require("lazy").setup({
 						},
 					},
 				})
+
+				vim.lsp.config("rust_analyzer", {
+					settings = {
+						["rust-analyzer"] = {
+							diagnostics = {
+								enable = true,
+								disabled = { "unresolved-proc-macro" }, -- example: disable a specific diagnostic
+							},
+							checkOnSave = {
+								command = "clippy",
+							},
+							assist = {
+								importGranularity = "module",
+								importPrefix = "by_self",
+							},
+							formatting = {
+								enable = true,
+							},
+						},
+					},
+				})
 			end,
 		},
 		{
@@ -1164,57 +1185,57 @@ null_ls.setup({
 	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "rust",
-	callback = function(args)
-		vim.lsp.start({
-			name = "rust-analyzer",
-			cmd = { "rust-analyzer" },
-			root_dir = vim.fs.dirname(vim.fs.find({ "Cargo.toml", ".git" }, { upward = true })[1]),
-			settings = {
-				["rust-analyzer"] = {
-					diagnostics = {
-						enable = true,
-						disabled = { "unresolved-proc-macro" }, -- example: disable a specific diagnostic
-					},
-					checkOnSave = {
-						command = "clippy",
-					},
-					assist = {
-						importGranularity = "module",
-						importPrefix = "by_self",
-					},
-					formatting = {
-						enable = true,
-					},
-				},
-			},
-		})
-	end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = "rust",
+-- 	callback = function(args)
+-- 		vim.lsp.start({
+-- 			name = "rust-analyzer",
+-- 			cmd = { "rust-analyzer" },
+-- 			root_dir = vim.fs.dirname(vim.fs.find({ "Cargo.toml", ".git" }, { upward = true })[1]),
+-- 			settings = {
+-- 				["rust-analyzer"] = {
+-- 					diagnostics = {
+-- 						enable = true,
+-- 						disabled = { "unresolved-proc-macro" }, -- example: disable a specific diagnostic
+-- 					},
+-- 					checkOnSave = {
+-- 						command = "clippy",
+-- 					},
+-- 					assist = {
+-- 						importGranularity = "module",
+-- 						importPrefix = "by_self",
+-- 					},
+-- 					formatting = {
+-- 						enable = true,
+-- 					},
+-- 				},
+-- 			},
+-- 		})
+-- 	end,
+-- })
 
-vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-	callback = function(ev)
-		-- 保存時に自動フォーマット
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			pattern = { "*.rs" }, -- none-lsでフォーマッターを使用しない拡張子のみ
-			callback = function()
-				vim.lsp.buf.format({
-					buffer = ev.buf,
-					async = false,
-				})
-				-- vim.lsp.buf.formatting_sync()
-				-- vim.lsp.buf.format({ async = false })
-				local last_line = vim.fn.getline("$")
-				-- 最終行に改行を挟む
-				if last_line ~= "" then
-					vim.fn.append(vim.fn.line("$"), "")
-				end
-			end,
-		})
-	end,
-})
+-- vim.api.nvim_create_autocmd("LspAttach", {
+-- 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+-- 	callback = function(ev)
+-- 		-- 保存時に自動フォーマット
+-- 		vim.api.nvim_create_autocmd("BufWritePre", {
+-- 			pattern = { "*.rs" }, -- none-lsでフォーマッターを使用しない拡張子のみ
+-- 			callback = function()
+-- 				vim.lsp.buf.format({
+-- 					buffer = ev.buf,
+-- 					async = false,
+-- 				})
+-- 				-- vim.lsp.buf.formatting_sync()
+-- 				-- vim.lsp.buf.format({ async = false })
+-- 				local last_line = vim.fn.getline("$")
+-- 				-- 最終行に改行を挟む
+-- 				if last_line ~= "" then
+-- 					vim.fn.append(vim.fn.line("$"), "")
+-- 				end
+-- 			end,
+-- 		})
+-- 	end,
+-- })
 
 -- 日本語入力ON時のカーソルの色を設定
 -- vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })
@@ -1231,24 +1252,4 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- ====================================================================
 -- ターミナルバッファの背景色のみを上書きする設定
 -- ====================================================================
-
--- 💡 ターミナルで使いたい白系の背景色コードを設定（例: #EEEEEE または #FFFFFF）
-local TERMINAL_BG_COLOR = "#FFFFFF"
-local MAIN_BG_COLOR = "#000000" -- メインのカラースキームの背景色に合わせて設定（黒系）
-
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*",
-	callback = function()
-		-- バッファがターミナルタイプの場合
-		if vim.bo.buftype == "terminal" then
-			-- 'Terminal' ハイライトグループの背景色を上書き
-			-- Terminal内の文字色（guifg）も必要に応じて変更すると見やすくなります。
-			vim.cmd("hi Terminal guibg=" .. TERMINAL_BG_COLOR .. " guifg=" .. MAIN_BG_COLOR)
-		else
-			-- ターミナルではないバッファに入った場合、上書きした色をクリアし、
-			-- 元のカラースキームの設定に戻す
-			vim.cmd("hi! clear Terminal")
-		end
-	end,
-})
 
