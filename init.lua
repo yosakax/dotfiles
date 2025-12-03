@@ -165,7 +165,14 @@ require("lazy").setup({
 			config = function()
 				require("copilot").setup({
 					suggestion = { enabled = false },
-					panel = { enabled = false },
+					panel = {
+						enabled = true,
+						auto_refresh = true,
+						layout = {
+							position = "right",
+							ratio = 0.3,
+						},
+					},
 					copilot_node_command = "node",
 				})
 			end,
@@ -484,6 +491,9 @@ require("lazy").setup({
 		-- },
 		{
 			"lewis6991/gitsigns.nvim",
+			init = function()
+				require("gitsigns").setup()
+			end,
 			config = function()
 				require("gitsigns").setup({
 					signs = {
@@ -867,6 +877,23 @@ require("lazy").setup({
 			"sarrisv/readermode.nvim",
 			opts = {},
 		},
+		{
+			"shellRaining/hlchunk.nvim",
+			event = { "BufReadPre", "BufNewFile" },
+			config = function()
+				require("hlchunk").setup({
+					chunk = {
+						enable = true,
+					},
+					indent = {
+						enable = false,
+					},
+					line_num = {
+						enable = true,
+					},
+				})
+			end,
+		},
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
 	-- Configure any other settings here. See the documentation for more details.
@@ -1019,7 +1046,7 @@ npairs.setup({
 	check_ts = true,
 })
 
-require("gitsigns").setup()
+-- require("gitsigns").setup()
 
 -- cmpとautopairsの連携
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
