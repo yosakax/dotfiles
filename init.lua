@@ -915,6 +915,10 @@ require("lazy").setup({
 				})
 			end,
 		},
+		{
+			"eero-lehtinen/oklch-color-picker.nvim",
+			opts = {},
+		},
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
 	-- Configure any other settings here. See the documentation for more details.
