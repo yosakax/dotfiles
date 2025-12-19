@@ -680,19 +680,6 @@ require("lazy").setup({
 				require("ibl").setup({ indent = { highlight = highlight } })
 			end,
 		},
-		-- {
-		-- 	"nvim-neo-tree/neo-tree.nvim",
-		-- 	branch = "v3.x",
-		-- 	dependencies = {
-		-- 		"nvim-lua/plenary.nvim",
-		-- 		"MunifTanjim/nui.nvim",
-		-- 		"nvim-tree/nvim-web-devicons", -- optional, but recommended
-		-- 	},
-		-- 	lazy = false, -- neo-tree will lazily load itself
-		-- 	config = function()
-		-- 		vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle<CR>")
-		-- 	end,
-		-- },
 		{
 			"stevearc/oil.nvim",
 			---@module 'oil'
@@ -916,8 +903,10 @@ require("lazy").setup({
 			end,
 		},
 		{
-			"eero-lehtinen/oklch-color-picker.nvim",
-			opts = {},
+			"catgoose/nvim-colorizer.lua",
+			event = "BufReadPre",
+			opts = { -- set to setup table
+			},
 		},
 		-- plugins above -------------------------------------------------------------------------------------------
 	},
