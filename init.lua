@@ -572,7 +572,6 @@ test: {
 						changedelete = { text = "~" },
 						untracked = { text = "┆" },
 					},
-					word_diff = true,
 					word_diff = false,
 					on_attach = function(bufnr)
 						local gitsigns = require("gitsigns")
@@ -964,29 +963,50 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- enable inlay-hint
 		vim.lsp.inlay_hint.enable()
 		local set = vim.keymap.set
-		set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { buffer = true })
-		set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true })
-		set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true })
-		set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", { buffer = true })
-		-- set("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { buffer = true })
-		set("n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", { buffer = true })
-		set("n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", { buffer = true })
+		-- LSP keymaps with descriptions
+		set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { buffer = true, desc = "Go to declaration" })
+		set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true, desc = "Go to definition" })
+		set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, desc = "Show hover documentation" })
+		set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", { buffer = true, desc = "Go to implementation" })
+		-- set("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { buffer = true, desc = "Signature help" })
+		set(
+			"n",
+			"<space>wa",
+			"<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>",
+			{ buffer = true, desc = "Add workspace folder" }
+		)
+		set(
+			"n",
+			"<space>wr",
+			"<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>",
+			{ buffer = true, desc = "Remove workspace folder" }
+		)
 		set(
 			"n",
 			"<space>wl",
 			"<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
-			{ buffer = true }
+			{ buffer = true, desc = "List workspace folders" }
 		)
-		set("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", { buffer = true })
-		set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", { buffer = true })
-		set("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", { buffer = true })
-		set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true })
-		set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true })
-		set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", { buffer = true })
-		set("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", { buffer = true })
-		set("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", { buffer = true })
-		set("n", "<C-f>", "<cmd>lua vim.lsp.buf.format()<CR>", { buffer = true })
-		set("n", "<C-n>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { buffer = true })
+		set(
+			"n",
+			"<space>D",
+			"<cmd>lua vim.lsp.buf.type_definition()<CR>",
+			{ buffer = true, desc = "Go to type definition" }
+		)
+		set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", { buffer = true, desc = "Rename symbol" })
+		set("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", { buffer = true, desc = "Code action" })
+		set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true, desc = "Find references" })
+		set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, desc = "Show diagnostics" })
+		set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", { buffer = true, desc = "Previous diagnostic" })
+		set("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", { buffer = true, desc = "Next diagnostic" })
+		set(
+			"n",
+			"<space>q",
+			"<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>",
+			{ buffer = true, desc = "Diagnostics to loclist" }
+		)
+		set("n", "<C-f>", "<cmd>lua vim.lsp.buf.format()<CR>", { buffer = true, desc = "Format buffer" })
+		set("n", "<C-n>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { buffer = true, desc = "Signature help" })
 	end,
 })
 
