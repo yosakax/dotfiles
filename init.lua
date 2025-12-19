@@ -1151,25 +1151,29 @@ vim.diagnostic.config({
 
 null_ls.setup({
 	debug = false,
+	-- NOTE: 書いた順に実行されるので、複数のformatterを使用する際は注意
 	sources = {
+		-- lua
 		formatting.stylua,
-		formatting.black,
+		-- python
 		formatting.isort,
+		formatting.black,
+		-- node
 		formatting.prettier,
 		formatting.prettierd,
+		-- c/c++
 		formatting.clang_format,
+		-- golagn
 		formatting.gofumpt,
 		-- formatting.typstfmt,
+		-- shell
 		formatting.shfmt,
+		-- asm
+		formatting.asmfmt,
+		-- text
 		diagnostics.codespell,
 	},
 	on_attach = function(client, bufnr)
-		local navic = require("nvim-navic")
-		local navbuddy = require("nvim-navbuddy")
-		if client.server_capabilities.documentSymbolProvider then
-			navic.attach(client, bufnr)
-			navbuddy.attach(client, bufnr)
-		end
 		if client.supports_method("textDocument/formatting") then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
@@ -1177,7 +1181,7 @@ null_ls.setup({
 				buffer = bufnr,
 				callback = function()
 					-- vim.lsp.buf.formatting_sync()
-					vim.lsp.buf.format({ async = false })
+					vim.lsp.buf.format({ async = false, bufnr = bufnr })
 					local last_line = vim.fn.getline("$")
 					-- 最終行に改行を挟む
 					if last_line ~= "" then
