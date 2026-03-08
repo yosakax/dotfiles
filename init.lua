@@ -2,10 +2,10 @@
 -- viと非互換のvimの独自拡張機能を使用
 vim.opt.compatible = false
 vim.opt.encoding = "utf-8"
-vim.opt.fileencodings = { "utf-8", "iso-2202-jp", "sjis", "euc-jp" }
+vim.opt.fileencodings = { "utf-8", "iso-2022-jp", "sjis", "euc-jp" }
 vim.opt.fileformats = { "unix", "dos" }
-vim.g.python_host_prog = "$HOME/.config/nvim/nvim-python/.venv/bin/python"
-vim.g.python3_host_prog = "$HOME/.config/nvim/nvim-python/.venv/bin/python"
+vim.g.python_host_prog = vim.fn.expand("$HOME/.config/nvim/nvim-python/.venv/bin/python")
+vim.g.python3_host_prog = vim.fn.expand("$HOME/.config/nvim/nvim-python/.venv/bin/python")
 -- バックアップをとらない
 vim.opt.backup = false
 vim.opt.swapfile = false
@@ -13,7 +13,7 @@ vim.opt.history = 50
 -- 検索時に大文字小文字を区別しない
 vim.opt.ignorecase = true
 -- 検索語に大文字を混ぜる場合には大文字小文字を区別する
-vim.opt.smartcase = false
+vim.opt.smartcase = true
 -- 言語に併せてインデントを自動挿入
 vim.opt.smartindent = true
 vim.opt.number = true
@@ -113,7 +113,6 @@ require("lazy").setup({
 		},
 		{
 			"folke/tokyonight.nvim",
-			lazy = false, -- make sure we load this during startup if it is your main colorscheme
 			priority = 1000, -- make sure to load this before all the other start plugins
 			config = function()
 				-- load the colorscheme here
@@ -123,7 +122,7 @@ require("lazy").setup({
 		{
 			"rebelot/kanagawa.nvim",
 			lazy = false,
-			prioriry = 1000,
+			priority = 1000,
 			config = function()
 				vim.cmd([[colorscheme kanagawa]])
 			end,
@@ -175,6 +174,72 @@ require("lazy").setup({
 					},
 					copilot_node_command = "node",
 				})
+			end,
+		},
+		{
+			"nickjvandyke/opencode.nvim",
+			version = "*", -- Latest stable release
+			dependencies = {
+				{
+					-- `snacks.nvim` integration is recommended, but optional
+					---@module "snacks" <- Loads `snacks.nvim` types for configuration intellisense
+					"folke/snacks.nvim",
+					optional = true,
+					opts = {
+						input = {}, -- Enhances `ask()`
+						picker = { -- Enhances `select()`
+							actions = {
+								opencode_send = function(...)
+									return require("opencode").snacks_picker_send(...)
+								end,
+							},
+							win = {
+								input = {
+									keys = {
+										["<a-a>"] = { "opencode_send", mode = { "n", "i" } },
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			config = function()
+				---@type opencode.Opts
+				vim.g.opencode_opts = {
+					-- Your configuration, if any; goto definition on the type or field for details
+				}
+
+				vim.o.autoread = true -- Required for `opts.events.reload`
+
+				-- Recommended/example keymaps
+				vim.keymap.set({ "n", "x" }, "<leader>oca", function()
+					require("opencode").ask("@this: ", { submit = true })
+				end, { desc = "Ask opencode…" })
+				vim.keymap.set({ "n", "x" }, "<leader>ocx", function()
+					require("opencode").select()
+				end, { desc = "Execute opencode action…" })
+				vim.keymap.set({ "n", "t" }, "<leader>oct", function()
+					require("opencode").toggle()
+				end, { desc = "Toggle opencode" })
+
+				vim.keymap.set({ "n", "x" }, "<leader>go", function()
+					return require("opencode").operator("@this ")
+				end, { desc = "Add range to opencode", expr = true })
+				vim.keymap.set("n", "<leader>goo", function()
+					return require("opencode").operator("@this ") .. "_"
+				end, { desc = "Add line to opencode", expr = true })
+
+				vim.keymap.set("n", "<S-C-u>", function()
+					require("opencode").command("session.half.page.up")
+				end, { desc = "Scroll opencode up" })
+				vim.keymap.set("n", "<S-C-d>", function()
+					require("opencode").command("session.half.page.down")
+				end, { desc = "Scroll opencode down" })
+
+				-- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap)
+				vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+				vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
 			end,
 		},
 		{
@@ -244,7 +309,7 @@ require("lazy").setup({
 						},
 						FixDiagnostic = {
 							prompt = "コードの診断結果に従って問題を修正してください。修正内容の説明は日本語でお願いします。",
-							mapping = "<leader>cd",
+							mapping = "<leader>cf",
 							description = "コードの修正をお願いする",
 							selection = require("CopilotChat.select").diagnostics,
 						},
@@ -1134,25 +1199,6 @@ vim.keymap.set("n", "<CR><CR>", "<C-w>w", {})
 
 -- -- formatter and linter settings by none-ls
 local prettier = require("prettier")
-
-prettier.setup({
-	bin = "prettier", -- or `'prettierd'` (v0.23.3+)
-	filetypes = {
-		"css",
-		"graphql",
-		"html",
-		"javascript",
-		"javascriptreact",
-		"json",
-		"less",
-		"markdown",
-		"scss",
-		"typescript",
-		"typescriptreact",
-		"yaml",
-	},
-})
-
 local null_ls_status_ok, null_ls = pcall(require, "null-ls")
 if not null_ls_status_ok then
 	return
@@ -1166,6 +1212,20 @@ prettier.setup({
 				check_package_json = true,
 			})
 		end,
+		filetypes = {
+			"css",
+			"graphql",
+			"html",
+			"javascript",
+			"javascriptreact",
+			"json",
+			"less",
+			"markdown",
+			"scss",
+			"typescript",
+			"typescriptreact",
+			"yaml",
+		},
 		runtime_condition = function(params)
 			-- return false to skip running prettier
 			return true
@@ -1216,7 +1276,7 @@ null_ls.setup({
 		-- golang
 		formatting.gofumpt,
 		-- rust
-		formatting.rust_analyzer,
+		-- formatting.rust_analyzer,
 		-- formatting.typstfmt,
 		-- shell
 		formatting.shfmt,
@@ -1313,4 +1373,3 @@ null_ls.setup({
 -- ====================================================================
 -- ターミナルバッファの背景色のみを上書きする設定
 -- ====================================================================
-
