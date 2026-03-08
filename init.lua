@@ -737,8 +737,15 @@ test: {
 		},
 		{
 			"nvim-telescope/telescope.nvim",
-			branch = "0.1.x",
+			version = "*",
+			defaults = {
+				preview = {
+					treesitter = false,
+				},
+			},
 			dependencies = { "nvim-lua/plenary.nvim" },
+			-- optional but recommended
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		},
 
 		{
