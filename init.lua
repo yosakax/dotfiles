@@ -123,7 +123,7 @@ require("lazy").setup({
 		{
 			"rebelot/kanagawa.nvim",
 			lazy = false,
-			priotiry = 1000,
+			prioriry = 1000,
 			config = function()
 				vim.cmd([[colorscheme kanagawa]])
 			end,
@@ -601,7 +601,7 @@ test: {
 
 						-- Actions
 						map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "stage_hunk" })
-						map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "reset_hunc" })
+						map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "reset_hunk" })
 
 						map("v", "<leader>hs", function()
 							gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
@@ -1131,6 +1131,7 @@ vim.keymap.set("n", "k", "gk", {})
 vim.keymap.set("n", "j", "gj", {})
 vim.keymap.set("t", "<C-n>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "<CR><CR>", "<C-w>w", {})
+
 -- -- formatter and linter settings by none-ls
 local prettier = require("prettier")
 
@@ -1212,8 +1213,10 @@ null_ls.setup({
 		formatting.prettierd,
 		-- c/c++
 		formatting.clang_format,
-		-- golagn
+		-- golang
 		formatting.gofumpt,
+		-- rust
+		formatting.rust_analyzer,
 		-- formatting.typstfmt,
 		-- shell
 		formatting.shfmt,
@@ -1230,12 +1233,13 @@ null_ls.setup({
 				buffer = bufnr,
 				callback = function()
 					-- vim.lsp.buf.formatting_sync()
-					vim.lsp.buf.format({ async = false, bufnr = bufnr })
-					local last_line = vim.fn.getline("$")
-					-- 最終行に改行を挟む
-					if last_line ~= "" then
-						vim.fn.append(vim.fn.line("$"), "")
-					end
+					vim.lsp.buf.format({
+						async = false,
+						bufnr = bufnr,
+						filter = function()
+							return client.name == "null-ls"
+						end,
+					})
 				end,
 			})
 		end
