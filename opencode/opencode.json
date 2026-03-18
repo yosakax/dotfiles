@@ -1,0 +1,73 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "edit": "ask",
+    "lsp": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "codesearch": "allow",
+    "question": "allow",
+    "external_directory": "ask",
+    "todoread": "allow",
+    "todowrite": "allow",
+    "bash": {
+      "*": "ask",
+      "ls *": "allow"
+    },
+    "doom_loop": "deny",
+    "websearch": "allow",
+    "read": "allow",
+    "list": "allow",
+    "task": "ask",
+    "skill": "ask",
+    "webfetch": "allow"
+  },
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      ".venv/**",
+      "local.settings.json",
+      "local.settings.*.json"
+    ]
+  },
+  "logLevel": "INFO",
+  "compaction": {
+    "auto": true
+  },
+  "autoupdate": "notify",
+  "agent": {
+    "general": {
+      "disable": false,
+      "permission": "ask",
+      "mode": "subagent"
+    },
+    "explore": {
+      "disable": false,
+      "permission": {
+        "edit": "deny",
+        "*": "allow"
+      },
+      "mode": "subagent"
+    },
+    "plan": {
+      "disable": false,
+      "mode": "all",
+      "permission": {
+        "edit": "deny",
+        "*": "allow"
+      }
+    },
+    "build": {
+      "disable": false,
+      "mode": "primary"
+    },
+    "summary": {
+      "disable": false
+    },
+    "compaction": {
+      "disable": false
+    }
+  }
+}

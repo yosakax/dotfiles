@@ -1,0 +1,28 @@
+# Styling for stylua (TOML). Tune values as you like.
+
+# Maximum line length before wrapping
+column_width = 100
+
+# Indentation: "Spaces" or "Tabs"
+indent_type = "Spaces"
+
+# Number of spaces for each indent
+indent_width = 2
+
+# Additional indent width for wrapped expressions
+# continuation_indent_width = 2
+
+# Line endings: "Unix" (LF) or "Windows" (CRLF)
+line_endings = "Unix"
+
+# Quote style:
+# - "AutoPreferSingle" will try to use single quotes when safe
+# - "AutoPreferDouble" will prefer double quotes
+# - "AlwaysPreferSingle" / "AlwaysPreferDouble" force one style
+quote_style = "AutoPreferDouble"
+
+# Wrap comments to column_width when possible
+# wrap_comments = true
+
+# Keep short/simple functions on a single line when possible
+# keep_simple_function_one_line = true
