@@ -36,7 +36,7 @@
   "compaction": {
     "auto": true
   },
-  "autoupdate": "notify",
+  "autoupdate": true,
   "agent": {
     "general": {
       "disable": false,
@@ -69,5 +69,6 @@
     "compaction": {
       "disable": false
     }
-  }
+  },
+  "plugin": ["@spoons-and-mirrors/subtask2@latest"]
 }
