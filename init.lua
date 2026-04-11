@@ -53,6 +53,19 @@ vim.o.foldlevel = 99
 vim.o.foldmethod = "expr"
 -- vim.o.foldtext = "" -- 任意; 既定の折り畳み表示が嫌いな人用
 
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#222233", blend = 20 })
+    vim.api.nvim_set_hl(0, "SignColumn", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "VertSplit", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "Pmenu", { bg = "#222233", blend = 20 })
+  end,
+})
+
 -- 背景透過
 -- highlight Normal ctermbg=NONE guibg=NONE
 -- highlight NonText ctermbg=NONE guibg=NONE
@@ -261,7 +274,7 @@ require("lazy").setup({
       },
       build = "make tiktoken", -- Only on MacOS or Linux
       opts = {
-        debug = true, -- Enable debugging
+        debug = false, -- Enable debugging
         -- See Configuration section for rest
         window = {
           layout = "vertical",
@@ -270,6 +283,7 @@ require("lazy").setup({
           border = "rounded", -- 'single', 'double', 'rounded', 'solid'
           -- title = "🤖 AI Assistant",
           -- zindex = 100, -- Ensure window stays on top
+          log_level = "info",
         },
       },
       -- See Commands section for default commands if you want to lazy load on them
