@@ -23,7 +23,7 @@ config.use_ime = true
 -- ウィンドウ外観
 ------------------------------------------------------------------------------------------------------
 config.window_decorations = "RESIZE"
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = true
 config.show_close_tab_button_in_tabs = false
 config.window_background_opacity = 0.8
@@ -63,7 +63,7 @@ config.window_padding = {
   left = 2,
   right = 2,
   top = 0,
-  bottom = 0,
+  bottom = "0.5cell",
 }
 
 ------------------------------------------------------------------------------------------------------
