@@ -23,9 +23,9 @@ config.use_ime = true
 -- ウィンドウ外観
 ------------------------------------------------------------------------------------------------------
 config.window_decorations = "RESIZE"
-config.hide_tab_bar_if_only_one_tab = false
+config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = true
-config.show_close_tab_button_in_tabs = false
+config.show_close_tab_button_in_tabs = true
 config.window_background_opacity = 0.8
 
 -- Linux-specific visual effect
@@ -48,7 +48,7 @@ config.color_scheme = "Kanagawa (Gogh)"
 -- Font
 ------------------------------------------------------------------------------------------------------
 if is_linux then
-  config.font = wezterm.font("GohuFont 11 Nerd Font Mono", {
+  config.font = wezterm.font("DepartureMono Nerd Font Mono", {
     weight = "Medium",
     stretch = "Normal",
     style = "Normal",
@@ -60,7 +60,7 @@ config.font_size = 16
 -- Padding
 ------------------------------------------------------------------------------------------------------
 config.window_padding = {
-  left = 2,
+  left = 0,
   right = 2,
   top = 0,
   bottom = "0.5cell",

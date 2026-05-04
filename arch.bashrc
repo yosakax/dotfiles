@@ -128,6 +128,8 @@ cppr() {
 source $HOME/.cargo/env
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[[ -f /usr/share/fzf/completion.bash ]] && source /usr/share/fzf/completion.bash
+[[ -f /usr/share/fzf/key-bindings.bash ]] && source /usr/share/fzf/key-bindings.bash
 
 alias vim="nvim"
 # alias cl="clip.exe <"
