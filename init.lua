@@ -676,7 +676,7 @@ test: {
                 "n",
                 "<leader>nn",
                 "<cmd>lua require('nvim-navbuddy').open()<CR>",
-                { noremap = true, silent = true }
+                { noremap = true, silent = true, desc = "Navbuddy: Open symbols" }
               ),
             })
           end,
@@ -775,7 +775,7 @@ test: {
               else
                 gitsigns.nav_hunk("next")
               end
-            end)
+            end, { desc = "GitSigns: Next hunk" })
 
             map("n", "[c", function()
               if vim.wo.diff then
@@ -783,7 +783,7 @@ test: {
               else
                 gitsigns.nav_hunk("prev")
               end
-            end)
+            end, { desc = "GitSigns: Previous hunk" })
 
             -- Actions
             map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "stage_hunk" })
@@ -791,20 +791,25 @@ test: {
 
             map("v", "<leader>hs", function()
               gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-            end)
+            end, { desc = "GitSigns: Stage selected hunk" })
 
             map("v", "<leader>hr", function()
               gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-            end)
+            end, { desc = "GitSigns: Reset selected hunk" })
 
-            map("n", "<leader>hS", gitsigns.stage_buffer)
-            map("n", "<leader>hR", gitsigns.reset_buffer)
-            map("n", "<leader>hp", gitsigns.preview_hunk)
-            map("n", "<leader>hi", gitsigns.preview_hunk_inline)
+            map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "GitSigns: Stage buffer" })
+            map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "GitSigns: Reset buffer" })
+            map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "GitSigns: Preview hunk" })
+            map(
+              "n",
+              "<leader>hi",
+              gitsigns.preview_hunk_inline,
+              { desc = "GitSigns: Preview hunk inline" }
+            )
 
             map("n", "<leader>hb", function()
               gitsigns.blame_line({ full = true })
-            end)
+            end, { desc = "GitSigns: Blame line" })
 
             map("n", "<leader>hd", gitsigns.diffthis, { desc = "diff this" })
 
@@ -814,7 +819,7 @@ test: {
 
             map("n", "<leader>hQ", function()
               gitsigns.setqflist("all")
-            end)
+            end, { desc = "GitSigns: Hunks to quickfix (all)" })
             map("n", "<leader>hq", gitsigns.setqflist, { desc = "set quick fix list" })
 
             -- Toggles
@@ -1064,8 +1069,18 @@ test: {
             -- border = 'single' | 'double' | 'shadow' | 'curved'
           },
         })
-        vim.keymap.set("n", "<C-g>", "<cmd>ToggleTerm direction=horizontal size=15<CR>")
-        vim.keymap.set("n", "<C-t>", "<cmd>ToggleTerm direction=float size=100<CR>")
+        vim.keymap.set(
+          "n",
+          "<C-g>",
+          "<cmd>ToggleTerm direction=horizontal size=15<CR>",
+          { desc = "ToggleTerm: Horizontal terminal" }
+        )
+        vim.keymap.set(
+          "n",
+          "<C-t>",
+          "<cmd>ToggleTerm direction=float size=100<CR>",
+          { desc = "ToggleTerm: Floating terminal" }
+        )
       end,
     },
     {
@@ -1310,30 +1325,109 @@ cmp.setup({
 })
 
 -- barbar.nvim keybinds
-local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
+local map = vim.keymap.set
 
 -- Move to previous/next
-map("n", "<C-j>", "<Cmd>BufferPrevious<CR>", opts)
-map("n", "<C-k>", "<Cmd>BufferNext<CR>", opts)
+map(
+  "n",
+  "<C-j>",
+  "<Cmd>BufferPrevious<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Previous buffer" }
+)
+map(
+  "n",
+  "<C-k>",
+  "<Cmd>BufferNext<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Next buffer" }
+)
 -- Re-order to previous/next
-map("n", "<C-h>", "<Cmd>BufferMovePrevious<CR>", opts)
-map("n", "<C-l>", "<Cmd>BufferMoveNext<CR>", opts)
+map(
+  "n",
+  "<C-h>",
+  "<Cmd>BufferMovePrevious<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Move buffer left" }
+)
+map(
+  "n",
+  "<C-l>",
+  "<Cmd>BufferMoveNext<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Move buffer right" }
+)
 -- Goto buffer in position...
-map("n", "<A-1>", "<Cmd>BufferGoto 1<CR>", opts)
-map("n", "<A-2>", "<Cmd>BufferGoto 2<CR>", opts)
-map("n", "<A-3>", "<Cmd>BufferGoto 3<CR>", opts)
-map("n", "<A-4>", "<Cmd>BufferGoto 4<CR>", opts)
-map("n", "<A-5>", "<Cmd>BufferGoto 5<CR>", opts)
-map("n", "<A-6>", "<Cmd>BufferGoto 6<CR>", opts)
-map("n", "<A-7>", "<Cmd>BufferGoto 7<CR>", opts)
-map("n", "<A-8>", "<Cmd>BufferGoto 8<CR>", opts)
-map("n", "<A-9>", "<Cmd>BufferGoto 9<CR>", opts)
-map("n", "<A-0>", "<Cmd>BufferLast<CR>", opts)
+map(
+  "n",
+  "<A-1>",
+  "<Cmd>BufferGoto 1<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 1" }
+)
+map(
+  "n",
+  "<A-2>",
+  "<Cmd>BufferGoto 2<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 2" }
+)
+map(
+  "n",
+  "<A-3>",
+  "<Cmd>BufferGoto 3<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 3" }
+)
+map(
+  "n",
+  "<A-4>",
+  "<Cmd>BufferGoto 4<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 4" }
+)
+map(
+  "n",
+  "<A-5>",
+  "<Cmd>BufferGoto 5<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 5" }
+)
+map(
+  "n",
+  "<A-6>",
+  "<Cmd>BufferGoto 6<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 6" }
+)
+map(
+  "n",
+  "<A-7>",
+  "<Cmd>BufferGoto 7<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 7" }
+)
+map(
+  "n",
+  "<A-8>",
+  "<Cmd>BufferGoto 8<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 8" }
+)
+map(
+  "n",
+  "<A-9>",
+  "<Cmd>BufferGoto 9<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to buffer 9" }
+)
+map(
+  "n",
+  "<A-0>",
+  "<Cmd>BufferLast<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Go to last buffer" }
+)
 -- Pin/unpin buffer
-map("n", "<A-p>", "<Cmd>BufferPin<CR>", opts)
+map(
+  "n",
+  "<A-p>",
+  "<Cmd>BufferPin<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Pin buffer" }
+)
 -- Close buffer
-map("n", "<A-c>", "<Cmd>BufferClose<CR>", opts)
+map(
+  "n",
+  "<A-c>",
+  "<Cmd>BufferClose<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Close buffer" }
+)
 -- Wipeout buffer
 --                 :BufferWipeout
 -- Close commands
@@ -1343,19 +1437,49 @@ map("n", "<A-c>", "<Cmd>BufferClose<CR>", opts)
 --                 :BufferCloseBuffersLeft
 --                 :BufferCloseBuffersRight
 -- Magic buffer-picking mode
-map("n", "<C-p>", "<Cmd>BufferPick<CR>", opts)
+map(
+  "n",
+  "<C-p>",
+  "<Cmd>BufferPick<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Pick buffer" }
+)
 -- Sort automatically by...
-map("n", "<Space>bb", "<Cmd>BufferOrderByBufferNumber<CR>", opts)
-map("n", "<Space>bn", "<Cmd>BufferOrderByName<CR>", opts)
-map("n", "<Space>bd", "<Cmd>BufferOrderByDirectory<CR>", opts)
-map("n", "<Space>bl", "<Cmd>BufferOrderByLanguage<CR>", opts)
-map("n", "<Space>bw", "<Cmd>BufferOrderByWindowNumber<CR>", opts)
+map(
+  "n",
+  "<Space>bb",
+  "<Cmd>BufferOrderByBufferNumber<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Order by buffer number" }
+)
+map(
+  "n",
+  "<Space>bn",
+  "<Cmd>BufferOrderByName<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Order by name" }
+)
+map(
+  "n",
+  "<Space>bd",
+  "<Cmd>BufferOrderByDirectory<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Order by directory" }
+)
+map(
+  "n",
+  "<Space>bl",
+  "<Cmd>BufferOrderByLanguage<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Order by language" }
+)
+map(
+  "n",
+  "<Space>bw",
+  "<Cmd>BufferOrderByWindowNumber<CR>",
+  { noremap = true, silent = true, desc = "Barbar: Order by window number" }
+)
 
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
-vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope: Find files" })
+vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope: Live grep" })
+vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope: Buffers" })
+vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope: Help tags" })
 
 -- nvim-autopairsの設定
 local npairs = require("nvim-autopairs")
@@ -1370,10 +1494,10 @@ local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 --  some key binds
-vim.keymap.set("n", "k", "gk", {})
-vim.keymap.set("n", "j", "gj", {})
-vim.keymap.set("t", "<C-n>", "<C-\\><C-n>", {})
-vim.keymap.set("n", "<CR><CR>", "<C-w>w", {})
+vim.keymap.set("n", "k", "gk", { desc = "Move up by screen line" })
+vim.keymap.set("n", "j", "gj", { desc = "Move down by screen line" })
+vim.keymap.set("t", "<C-n>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("n", "<CR><CR>", "<C-w>w", { desc = "Switch window" })
 
 -- -- formatter and linter settings by none-ls
 local prettier = require("prettier")
