@@ -597,6 +597,13 @@ test: {
       opts = {
         -- add any options here
       },
+      keys = {
+        {
+          "<leader>nd",
+          "<cmd>NoiceDismiss<CR>",
+          desc = "Dismiss noice messages",
+        },
+      },
       dependencies = {
         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
         "MunifTanjim/nui.nvim",
