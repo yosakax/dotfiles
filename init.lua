@@ -1117,20 +1117,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
       "<cmd>lua vim.lsp.buf.definition()<CR>",
       { buffer = true, desc = "Go to definition" }
     )
-    set(
-      "n",
-      "K",
-      function()
-        local clients = vim.lsp.get_clients({ bufnr = ctx.buf })
-        for _, client in ipairs(clients) do
-          if client:supports_method("textDocument/hover") then
-            vim.lsp.buf.hover()
-            return
-          end
+    set("n", "K", function()
+      local clients = vim.lsp.get_clients({ bufnr = ctx.buf })
+      for _, client in ipairs(clients) do
+        if client:supports_method("textDocument/hover") then
+          vim.lsp.buf.hover()
+          return
         end
-      end,
-      { buffer = ctx.buf, desc = "Show hover documentation" }
-    )
+      end
+    end, { buffer = ctx.buf, desc = "Show hover documentation" })
     set(
       "n",
       "gi",
