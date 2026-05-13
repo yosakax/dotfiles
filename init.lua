@@ -90,6 +90,52 @@ vim.opt.updatetime = 300
 vim.opt.cursorline = false
 vim.opt.cursorcolumn = true
 
+-- Backward compatibility for plugins still using deprecated vim.validate({...}) signature.
+-- Convert table-form arguments into modern vim.validate(name, value, validator, optional, message) calls.
+do
+  local orig_validate = vim.validate
+  local type_aliases = {
+    b = "boolean",
+    c = "callable",
+    f = "function",
+    n = "number",
+    s = "string",
+    t = "table",
+  }
+
+  local function normalize_validator(validator)
+    if type(validator) == "string" then
+      return type_aliases[validator] or validator
+    end
+
+    if type(validator) == "table" then
+      local normalized = {}
+      for i, v in ipairs(validator) do
+        normalized[i] = type_aliases[v] or v
+      end
+      return normalized
+    end
+
+    return validator
+  end
+
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.validate = function(name, value, validator, optional, message)
+    if type(name) == "table" and value == nil and validator == nil then
+      for param_name, spec in pairs(name) do
+        if type(spec) == "table" then
+          orig_validate(param_name, spec[1], normalize_validator(spec[2]), spec[3], spec[4])
+        else
+          orig_validate(param_name, spec)
+        end
+      end
+      return
+    end
+
+    return orig_validate(name, value, validator, optional, message)
+  end
+end
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -265,6 +311,7 @@ require("lazy").setup({
     },
     {
       "zbirenbaum/copilot-cmp",
+      enabled = false,
       config = function()
         require("copilot_cmp").setup({
           suggestion = { enabled = false },
@@ -1073,8 +1120,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     set(
       "n",
       "K",
-      "<cmd>lua vim.lsp.buf.hover()<CR>",
-      { buffer = true, desc = "Show hover documentation" }
+      function()
+        local clients = vim.lsp.get_clients({ bufnr = ctx.buf })
+        for _, client in ipairs(clients) do
+          if client:supports_method("textDocument/hover") then
+            vim.lsp.buf.hover()
+            return
+          end
+        end
+      end,
+      { buffer = ctx.buf, desc = "Show hover documentation" }
     )
     set(
       "n",
@@ -1131,36 +1186,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
       "<cmd>lua vim.diagnostic.open_float()<CR>",
       { buffer = true, desc = "Show diagnostics" }
     )
-    set(
-      "n",
-      "[d",
-      "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>",
-      { buffer = true, desc = "Previous diagnostic" }
-    )
-    set(
-      "n",
-      "]d",
-      "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>",
-      { buffer = true, desc = "Next diagnostic" }
-    )
-    set(
-      "n",
-      "<space>q",
-      "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>",
-      { buffer = true, desc = "Diagnostics to loclist" }
-    )
+    set("n", "[d", function()
+      vim.diagnostic.goto_prev()
+    end, { buffer = true, desc = "Previous diagnostic" })
+    set("n", "]d", function()
+      vim.diagnostic.goto_next()
+    end, { buffer = true, desc = "Next diagnostic" })
+    set("n", "<space>q", function()
+      vim.diagnostic.setloclist()
+    end, { buffer = true, desc = "Diagnostics to loclist" })
     set(
       "n",
       "<C-f>",
       "<cmd>lua vim.lsp.buf.format()<CR>",
       { buffer = true, desc = "Format buffer" }
     )
-    set(
-      "n",
-      "<C-n>",
-      "<cmd>lua vim.lsp.buf.signature_help()<CR>",
-      { buffer = true, desc = "Signature help" }
-    )
+    set("n", "<C-n>", function()
+      vim.lsp.buf.signature_help({ focusable = true })
+    end, { buffer = true, desc = "Signature help" })
   end,
 })
 
@@ -1174,9 +1217,6 @@ vim.keymap.set("n", "<Leader>=", "<C-w>=", { desc = "均等なウィンドウサ
 
 -- lspのハンドラーに設定
 -- capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-vim.lsp.handlers["textDocument/signatureHelp"] =
-  vim.lsp.with(vim.lsp.handlers.signature_help, { focusable = true })
 
 -- lspの設定後に追加
 vim.opt.completeopt = "menu,menuone,noselect"
@@ -1377,7 +1417,7 @@ null_ls.setup({
     diagnostics.codespell,
   },
   on_attach = function(client, bufnr)
-    if client.supports_method("textDocument/formatting") then
+    if client:supports_method("textDocument/formatting") then
       vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
       vim.api.nvim_create_autocmd("BufWritePre", {
         group = augroup,
