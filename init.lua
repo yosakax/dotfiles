@@ -1155,6 +1155,13 @@ test: {
       opts = { -- set to setup table
       },
     },
+    {
+      "alaviss/nim.nvim",
+    },
+    {
+      "sphamba/smear-cursor.nvim",
+      opts = {},
+    },
     -- plugins above -------------------------------------------------------------------------------------------
   },
   -- Configure any other settings here. See the documentation for more details.
@@ -1637,28 +1644,28 @@ null_ls.setup({
 -- 	end,
 -- })
 
--- vim.api.nvim_create_autocmd("LspAttach", {
--- 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
--- 	callback = function(ev)
--- 		-- 保存時に自動フォーマット
--- 		vim.api.nvim_create_autocmd("BufWritePre", {
--- 			pattern = { "*.rs" }, -- none-lsでフォーマッターを使用しない拡張子のみ
--- 			callback = function()
--- 				vim.lsp.buf.format({
--- 					buffer = ev.buf,
--- 					async = false,
--- 				})
--- 				-- vim.lsp.buf.formatting_sync()
--- 				-- vim.lsp.buf.format({ async = false })
--- 				local last_line = vim.fn.getline("$")
--- 				-- 最終行に改行を挟む
--- 				if last_line ~= "" then
--- 					vim.fn.append(vim.fn.line("$"), "")
--- 				end
--- 			end,
--- 		})
--- 	end,
--- })
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+  callback = function(ev)
+    -- 保存時に自動フォーマット
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = { "*.rs" }, -- none-lsでフォーマッターを使用しない拡張子のみ
+      callback = function()
+        vim.lsp.buf.format({
+          buffer = ev.buf,
+          async = false,
+        })
+        -- vim.lsp.buf.formatting_sync()
+        -- vim.lsp.buf.format({ async = false })
+        local last_line = vim.fn.getline("$")
+        -- 最終行に改行を挟む
+        if last_line ~= "" then
+          vim.fn.append(vim.fn.line("$"), "")
+        end
+      end,
+    })
+  end,
+})
 
 -- 日本語入力ON時のカーソルの色を設定
 -- vim.api.nvim_set_hl(0, "Normal", { ctermfg = "lightgray", ctermbg = "darkgray" })

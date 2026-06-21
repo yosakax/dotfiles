@@ -110,7 +110,6 @@ if ! shopt -oq posix; then
 	fi
 fi
 
-
 ## コピペ用の関数
 # you need to install xsel like this: sudo apt install xsel
 # clip() { # ファイルの中身をコピー
@@ -189,3 +188,4 @@ export GOPATH=$HOME/.config/go/
 
 eval "$(/usr/sbin/mise activate bash)"
 
+export PATH="$HOME/.nimble/bin:$PATH"
