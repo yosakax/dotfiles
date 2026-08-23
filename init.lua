@@ -179,6 +179,91 @@ require("lazy").setup({
       end,
     },
     {
+      "folke/flash.nvim",
+      event = "VeryLazy",
+      ---@type Flash.Config
+      opts = {},
+      keys = {
+        {
+          "S",
+          mode = { "n", "x", "o" },
+          function()
+            require("flash").jump()
+          end,
+          desc = "Flash",
+        },
+        -- {
+        --   "S",
+        --   mode = { "n", "x", "o" },
+        --   function() require("flash").treesitter() end,
+        --   desc = "Flash Treesitter",
+        -- },
+        -- {
+        --   "r",
+        --   mode = "o",
+        --   function()
+        --     require("flash").remote()
+        --   end,
+        --   desc = "Remote Flash",
+        -- },
+        -- {
+        --   "R",
+        --   mode = { "o", "x" },
+        --   function()
+        --     require("flash").treesitter_search()
+        --   end,
+        --   desc = "Treesitter Search",
+        -- },
+        -- {
+        --   "<c-s>",
+        --   mode = { "c" },
+        --   function()
+        --     require("flash").toggle()
+        --   end,
+        --   desc = "Toggle Flash Search",
+        -- },
+      },
+    },
+    {
+      "folke/todo-comments.nvim",
+      dependencies = { "nvim-lua/plenary.nvim" },
+      opts = {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      },
+    },
+    {
+      "MagicDuck/grug-far.nvim",
+      -- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
+      -- additional lazy config to defer loading is not really needed...
+      keys = {
+        { "<leader>sr", "<cmd>GrugFar<cr>", desc = "Search & Replace (grug-far)" },
+      },
+      config = function()
+        -- GrugFarFloat: grug-far用のfloatウィンドウを生成する内部コマンド。
+        -- ユーザーは直接呼ばず、:GrugFar (windowCreationCommand経由)から自動的に使われる。
+        vim.api.nvim_create_user_command("GrugFarFloat", function()
+          local width = math.floor(vim.o.columns * 0.85)
+          local height = math.floor(vim.o.lines * 0.85)
+          vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
+            relative = "editor",
+            width = width,
+            height = height,
+            row = math.floor((vim.o.lines - height) / 2),
+            col = math.floor((vim.o.columns - width) / 2),
+            style = "minimal",
+            border = "rounded",
+            title = "grug-far",
+            title_pos = "center",
+          })
+        end, {})
+        require("grug-far").setup({
+          windowCreationCommand = "GrugFarFloat",
+        })
+      end,
+    },
+    {
       "folke/tokyonight.nvim",
       priority = 1000, -- make sure to load this before all the other start plugins
       config = function()
