@@ -1790,9 +1790,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         -- vim.lsp.buf.format({ async = false })
         local last_line = vim.fn.getline("$")
         -- 最終行に改行を挟む
-        if last_line ~= "" then
-          vim.fn.append(vim.fn.line("$"), "")
-        end
+        -- if last_line ~= "" then
+        --   vim.fn.append(vim.fn.line("$"), "")
+        -- end
       end,
     })
   end,
