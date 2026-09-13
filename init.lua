@@ -185,7 +185,7 @@ require("lazy").setup({
       opts = {},
       keys = {
         {
-          "S",
+          "s",
           mode = { "n", "x", "o" },
           function()
             require("flash").jump()
